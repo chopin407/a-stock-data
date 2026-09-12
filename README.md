@@ -26,7 +26,7 @@
   <a href="./CHANGELOG.md">更新日志</a>
 </p>
 
-一个自包含的 Skill 文件，把分散在 22 个数据源里的 A 股原始数据整合成 AI 编程助手直接能用的工具集。你不用再背 mootdx 的 K 线参数、东财的 PDF Referer 头、iwencai 的 X-Claw 鉴权——全部封装好了。主源被封还有「备用源速查」可降级。
+一个自包含的 Skill 文件，把分散在 22 个数据源里的 A 股原始数据整合成 AI 编程助手直接能用的工具集。行情优先连接 `injoyai/tdx` 本地 REST 服务，失败自动降级 mootdx；东财 PDF Referer、iwencai X-Claw 等细节也已封装。
 
 > 兼容 [Claude Code](https://github.com/anthropics/claude-code) · [Codex](https://github.com/openai/codex) · [OpenClaw](https://github.com/anthropics/openclaw)
 >
@@ -47,9 +47,9 @@
 ## 架构
 
 ```
-A 股全栈数据 · 十二层架构 · V3.8.0
-│  （优先级：mootdx/腾讯 不封IP 优先用；东财仅用于独有数据，已内置限流防封）
-├── 行情层    mootdx + 腾讯 + 百度K线 + 新浪  K线(带MA5/10/20) + 五档盘口 + PE/PB/市值 + 指数/ETF
+A 股全栈数据 · 十二层架构 · V3.8.1
+│  （优先级：injoyai/tdx REST → mootdx 自动降级；腾讯补估值；东财仅用于独有数据）
+├── 行情层    injoyai/tdx + mootdx + 腾讯 + 百度K线 + 新浪  K线(带MA5/10/20) + 五档盘口 + PE/PB/市值 + 指数/ETF
 │                                           + 复权因子 qfq/hfq  ★V3.7
 ├── 研报层    东财 reportapi + 同花顺 + iwencai  个股研报 / 行业研报 / PDF下载 / 一致预期 / NL搜索
 ├── 信号层    同花顺 + 东财                  强势股 + 题材归因 + 北向资金 + 板块归属
@@ -57,9 +57,9 @@ A 股全栈数据 · 十二层架构 · V3.8.0
 ├── 资金面    东财 datacenter + push2        融资融券 + 大宗交易 + 股东户数 + 分红送转 + 资金流(分钟+120日)
 │   /筹码     本地计算                       筹码分布 CYQ：获利比例 / 平均成本 / 成本区间 / 筹码峰  ★V3.7
 ├── 新闻层    东财 + 财联社                  个股新闻 / 财联社电报(✅V3.4复活) / 全球资讯（互备）
-├── 基础数据  mootdx + 东财 + 新浪           季报37字段 / F10九大类 / 财报三表
+├── 基础数据  injoyai/tdx + mootdx + 东财 + 新浪  季报37字段 / F10九大类 / 财报三表
 │           + baostock + 申万                估值历史(PE/PB/PS+换手率+停牌+ST) / 上市退市日 / 申万行业变迁史  ★V3.7
-├── 公告层    巨潮 cninfo + mootdx           沪深北全量公告
+├── 公告层    巨潮 cninfo + injoyai/tdx/mootdx  沪深北全量公告
 ├── 打板层    东财 push2ex + 同花顺          涨停池 / 炸板 / 跌停 / 昨涨停 / 涨停原因题材 / 连板梯队
 │                                           + 重点监控池 + 日内异动池  ★V3.6
 ├── 期权层    新浪 hq.sinajs                ETF期权 T型报价 / 希腊字母 / 隐含波动率 IV  ★V3.3
@@ -84,9 +84,20 @@ mkdir -p ~/.claude/skills/a-stock-data
 curl -o ~/.claude/skills/a-stock-data/SKILL.md \
   https://raw.githubusercontent.com/simonlin1212/a-stock-data/main/SKILL.md
 
-# 3. 安装依赖（V3.0 不再需要 akshare）
-pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
+# 3. 安装 Python 依赖
+pip install requests pandas stockstats numpy baostock xlrd openpyxl
+# 可选降级客户端：pip install mootdx
 ```
+
+推荐再启动首选 TDX 服务：
+
+```bash
+git clone https://github.com/injoyai/tdx.git
+cd tdx && go run ./example/HTTPServer
+# 非默认地址可设置 ASTOCK_TDX_URL=http://127.0.0.1:8080
+```
+
+> TDX 示例服务本身不带鉴权；仅在本机或受控内网使用，不要直接暴露到公网。
 
 启动 Claude Code，说一句「帮我看看 688017 的估值」，自动激活。
 
@@ -104,7 +115,7 @@ pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
 
 | 端点 | 数据 |
 |------|------|
-| mootdx 行情 | K线(多周期) + 五档盘口 + 逐笔成交 + 实时报价 46 字段 |
+| TDX 行情（injoyai/tdx 首选，mootdx 自动降级） | K线(多周期) + 五档盘口 + 逐笔成交 + 实时报价 |
 | 腾讯财经 | PE(TTM) / PB / 总市值 / 流通市值 / 换手率 / 涨跌停价 / 指数 / ETF |
 | **百度K线** | 日K线 + MA5/MA10/MA20 均价直接返回（V3.0 新增） |
 | **新浪复权因子** | qfq / hfq 因子序列 + 套用到不复权 K 线（V3.7 新增） |
@@ -286,14 +297,15 @@ pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
 ---
 
 
-## 数据源优先级（V3.2 重排，按封 IP 风险）
+## 数据源优先级（V3.8.1）
 
-> **原则：行情/K线/实时价/市值/财务能从 mootdx 或腾讯拿到的，一律优先用它们（不封 IP）。东财只用于它独有、别处拿不到的数据，且全部走 `em_get()` 内置限流。**
+> **原则：行情/K线/逐笔/财务/F10 优先走 injoyai/tdx REST，失败自动降级 mootdx；PB/市值/换手率/涨跌停价由腾讯补齐。东财只用于独有数据，且全部走 `em_get()` 限流。**
 
 | 优先级 | 数据源 | 协议 | 封 IP 风险 | 用途 |
 |--------|--------|------|-----------|------|
-| **1（首选）** | mootdx（通达信） | TCP 7709 | **不封 IP** | K线/五档/逐笔/财务快照/F10 |
-| **2（首选）** | 腾讯财经 | HTTP | **不封 IP** | 实时价/PE/PB/市值/换手率/涨跌停/指数/ETF |
+| **1（首选）** | injoyai/tdx REST（通达信） | 本地 HTTP → TCP 7709 | **不封 IP** | K线/五档/逐笔/财务快照/F10 |
+| **自动降级** | mootdx（通达信） | Python → TCP 7709 | **不封 IP** | 首选服务不可用时保持兼容 |
+| **2** | 腾讯财经 | HTTP | **不封 IP** | 实时价/PE/PB/市值/换手率/涨跌停/指数/ETF |
 | 3 | 同花顺热点/北向 | HTTP | 极低（零鉴权） | 强势股/题材归因/北向资金 |
 | 4 | 百度股市通 | HTTP | 极低 | K线（带 MA5/10/20）|
 | 5 | 新浪财经 | HTTP | 低 | 财报三表 |
@@ -308,7 +320,7 @@ pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
 | 官方备胎 | **上交所 / 深交所 / 北交所** | HTTP | 匿名访问，限制批量频率 | 沪深两融、北交所当前行情与五档；保留既有沪深备胎 |
 | **末位（仅独有数据）** | **东财** datacenter/push2/reportapi/search/np-weblist | HTTP | **中 — 有风控会封 IP** | 龙虎榜/解禁/两融/大宗/股东户数/分红/资金流/研报/个股新闻/全球资讯（已统一走 `em_get()` 限流） |
 
-> **架构原则：** 除 mootdx 与 baostock（均为 TCP 客户端库）外，全部直连 HTTP API，不经第三方数据封装。**东财系接口有访问频率风控，所有调用统一经 `em_get()` 串行限流防封；批量任务请调大 `EM_MIN_INTERVAL`。**
+> **架构原则：** injoyai/tdx REST 是本地 Go 协议服务，mootdx 是同源 Python 降级，baostock 是另一 TCP 客户端；其余全部直连 HTTP API。**东财系调用统一经 `em_get()` 串行限流。**
 >
 > **降级原则：** 主源被封/失效时，查 SKILL.md「备用源速查 & 降级策略」。部分核心数据有**不同域名、不同风控面**的独立备胎；并非所有能力都有备份，取数后仍须检查日期与完整性。
 
@@ -341,18 +353,16 @@ V3.6.0 前研报层确实如此（reportapi 只认纯 6 位数字，带前缀静
 已复活（V3.4.0）。2026-05 死的是旧 `nodeapi` 系接口；官方新版 `v1/roll/get_roll_list` 一直可用，只是强制 `sign` 校验——sign 纯本地可算（`md5(sha1(按 key 字典序拼接的 query 串))`），零 key。与东财 7×24 全球资讯互为独立备份。
 
 **Q: mootdx 库听说停更了，还能用吗？**
-库确实烂尾（最后 commit 2024-07，BESTIP bug 无官方修复），但**通达信 TCP 协议本身照常运行**——烂尾的是封装库，不是数据源。内置的 `tdx_client()` 已绕开 BESTIP bug，继续用没问题；若未来装不上，社区活跃替代是 easy_tdx（同协议）。
+可以作为降级，但不再是第一选择。启动 injoyai/tdx REST 后，`tdx_client()` 会先做健康检查和真实 K 线验活；失败才调用带服务器探测的 mootdx。
 
 **Q: `pip install mootdx` 把 httpx 降到 0.25.2，和 MCP（要 httpx≥0.27.1）冲突？（#30）**
-mootdx 上游锁了 `httpx<0.26`，与 MCP 等工具的 `httpx≥0.27` 硬冲突，skill 层改不动它的依赖声明。但**可以绕过**——关键点：**mootdx 取行情走的是 TCP 二进制协议（通达信 7709 端口），运行时根本不经过 httpx**，`httpx<0.26` 只是它声明的一个用不到的保守上限。两个务实解法：
-> 1. **`--no-deps` 升 httpx（推荐）**：装完 mootdx 后 `pip install --no-deps "httpx>=0.27.1"`，既满足 MCP，mootdx 也照常工作。pip 会留一条 incompatible 警告，但不影响运行（实测 mootdx 0.11.7 在 httpx 0.28.1 下取数正常）。
-> 2. **独立 venv 隔离**：把跑 mootdx 的部分和跑 MCP 的主环境分到不同 venv，彻底互不干扰。
+mootdx 上游锁了 `httpx<0.26`。V3.8.1 起推荐直接启动 injoyai/tdx REST，不安装 mootdx，就没有该依赖冲突；若必须保留降级客户端，可放入独立 venv，或在确认兼容后用 `--no-deps` 管理 httpx。
 
-**Q: mootdx 和腾讯有什么区别？**
-互补。mootdx = 交易层（价格 + 盘口 + K 线），腾讯 = 估值层（PE / PB / 市值 / 换手率 / 涨跌停价）。两者都不封 IP。
+**Q: TDX 和腾讯有什么区别？**
+互补。injoyai/tdx（mootdx 为降级）负责交易层与财务/F10；腾讯补 PE/PB/市值/换手率/涨跌停价。
 
-**Q: 在海外服务器跑，mootdx 超时？**
-mootdx 走 TCP 直连通达信行情服务器，需国内 IP 才稳定。海外环境建议走代理或切换到 yfinance。
+**Q: 在海外服务器跑，TDX 超时？**
+injoyai/tdx 和 mootdx 最终都走 TCP 7709，需国内 IP 才稳定。可把 TDX REST 部署在国内网络并通过受控内网访问。
 
 **Q: 腾讯 API 字段 43 是 PB 吗？**
 不是。43 = 振幅%，46 = PB。网上大量教程写错了，这里是实测校准结果。

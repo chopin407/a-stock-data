@@ -24,9 +24,9 @@
   <a href="./CHANGELOG.md">Changelog</a>
 </p>
 
-Full-stack data toolkit for China A-Share market — 12-layer architecture · 60 capability endpoints (55 primary + 5 backups) · 22 data sources · direct HTTP calls except two TCP client libraries (mootdx / baostock)
+Full-stack data toolkit for China A-Share market — 12-layer architecture · 60 capability endpoints (55 primary + 5 backups) · 22 data sources · TDX-first with automatic fallback
 
-A self-contained Skill file that consolidates raw A-share data from 22 sources into a ready-to-use toolkit for AI coding assistants. No need to memorize mootdx candlestick parameters, Eastmoney PDF Referer headers, or iwencai X-Claw authentication — it's all handled. And when a primary source bans you, there's a backup-source quick reference to fall back on.
+A self-contained Skill file that consolidates raw A-share data from 22 sources into a ready-to-use toolkit for AI coding assistants. Market data prefers the local `injoyai/tdx` REST service and automatically falls back to mootdx; Eastmoney PDF Referer and iwencai X-Claw details are handled as well.
 
 > Compatible with [Claude Code](https://github.com/anthropics/claude-code) · [Codex](https://github.com/openai/codex) · [OpenClaw](https://github.com/anthropics/openclaw)
 >
@@ -47,9 +47,9 @@ Contact: [simonlin0423@gmail.com](mailto:simonlin0423@gmail.com)
 ## Architecture
 
 ```
-China A-Share Full-Stack Data · 12-Layer Architecture · V3.8.0
-│  (Priority: prefer mootdx/Tencent — never IP-banned; Eastmoney only for exclusive data, with built-in throttling)
-├── Market Data    mootdx + Tencent + Baidu + Sina    Candlesticks (w/ MA5/10/20) + Order Book + PE/PB + Index/ETF
+China A-Share Full-Stack Data · 12-Layer Architecture · V3.8.1
+│  (Priority: injoyai/tdx REST → mootdx fallback; Tencent supplements valuation fields)
+├── Market Data    injoyai/tdx + mootdx + Tencent + Baidu + Sina    Candlesticks + Order Book + PE/PB + Index/ETF
 │                                                     + adjust factors qfq/hfq  ★V3.7
 ├── Research       Eastmoney + THS + iwencai          Stock reports / Industry reports / PDF / Consensus EPS / NL search
 ├── Signals        THS + Eastmoney                    Hot stocks + Sector attribution + Northbound flow
@@ -57,9 +57,9 @@ China A-Share Full-Stack Data · 12-Layer Architecture · V3.8.0
 ├── Capital Flow   Eastmoney datacenter + push2       Margin trading + Block trades + Holder count + Dividends + Fund flow(min+120d)
 │   / Chips     computed locally                  Chip distribution (CYQ): profit ratio / avg cost / cost range / peak  ★V3.7
 ├── News           Eastmoney + Cailianpress           Stock news / CLS flash (✅revived in V3.4) / Global finance (mutual backup)
-├── Fundamentals   mootdx + Eastmoney + Sina          37-field quarterly + F10 9 categories + Financial statements
+├── Fundamentals   injoyai/tdx + mootdx + Eastmoney + Sina  37-field quarterly + F10 + Financial statements
 │               + baostock + SW                  Valuation history (PE/PB/PS + turnover + ST) / listing & delisting / SW industry history  ★V3.7
-├── Filings        cninfo + mootdx                    Full filings across SSE / SZSE / BSE
+├── Filings        cninfo + injoyai/tdx/mootdx        Full filings across SSE / SZSE / BSE
 ├── Limit-Up       Eastmoney push2ex + THS            ZT/ZB/DT/prev-ZT pools / limit reasons / consecutive-board ladder
 │                                                     + Watch list pool + Intraday price-anomaly pool  ★V3.6
 ├── Options        Sina hq.sinajs                     ETF option T-quotes / Greeks / implied volatility  ★V3.3
@@ -84,9 +84,20 @@ mkdir -p ~/.claude/skills/a-stock-data
 curl -o ~/.claude/skills/a-stock-data/SKILL.md \
   https://raw.githubusercontent.com/simonlin1212/a-stock-data/main/SKILL.md
 
-# 3. Install dependencies (V3.0: akshare no longer needed)
-pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
+# 3. Install Python dependencies
+pip install requests pandas stockstats numpy baostock xlrd openpyxl
+# Optional fallback client: pip install mootdx
 ```
+
+Recommended: start the preferred TDX service as well:
+
+```bash
+git clone https://github.com/injoyai/tdx.git
+cd tdx && go run ./example/HTTPServer
+# Set ASTOCK_TDX_URL if it is not at http://127.0.0.1:8080
+```
+
+> The example TDX service has no authentication. Keep it on the local machine or a controlled private network; do not expose it directly to the public internet.
 
 Launch Claude Code and say "Check the valuation of 688017" — the skill activates automatically.
 
@@ -104,7 +115,7 @@ There are 55 primary entries and 5 backups. Counts refer to capability entries: 
 
 | Endpoint | Data |
 |----------|------|
-| mootdx Market Data | Candlesticks (multi-period) + Level-2 order book + tick-by-tick + 46-field quote |
+| TDX Market Data (injoyai/tdx preferred, mootdx fallback) | Multi-period candlesticks + five-level book + tick-by-tick + real-time quote |
 | Tencent Finance | PE(TTM) / PB / Market Cap / Float Cap / Turnover / Price Limits / Index / ETF |
 | **Baidu K-line** | Daily K-line + MA5/MA10/MA20 moving averages included (V3.0 new) |
 | **Sina Adjust Factors** | qfq / hfq factor series + applying them to unadjusted candles (V3.7 new) |
@@ -285,14 +296,15 @@ Just tell your AI assistant:
 ---
 
 
-## Data Source Priority (V3.2 re-ranked by IP-ban risk)
+## Data Source Priority (V3.8.1)
 
-> **Principle: anything available from mootdx or Tencent (quotes / K-line / live price / market cap / financials) must use them first (never IP-banned). Eastmoney is only for its exclusive data, all routed through the throttled `em_get()`.**
+> **Principle: quotes, K-lines, ticks, financial snapshots and F10 prefer injoyai/tdx REST, with automatic mootdx fallback. Tencent supplements PB, market cap, turnover and price limits. Eastmoney is reserved for exclusive data and routed through `em_get()`.**
 
 | Priority | Source | Protocol | IP Ban Risk | Use |
 |----------|--------|----------|-------------|-----|
-| **1 (top)** | mootdx (TDX) | TCP 7709 | **Never banned** | K-line / order book / ticks / financials / F10 |
-| **2 (top)** | Tencent Finance | HTTP | **Never banned** | Live price / PE / PB / market cap / turnover / index / ETF |
+| **1 (top)** | injoyai/tdx REST (TDX) | Local HTTP → TCP 7709 | **Never banned** | K-line / order book / ticks / financials / F10 |
+| **automatic fallback** | mootdx (TDX) | Python → TCP 7709 | **Never banned** | Compatible fallback when the primary service is unavailable |
+| **2** | Tencent Finance | HTTP | **Never banned** | Live price / PE / PB / market cap / turnover / index / ETF |
 | 3 | THS Hot Stocks / Northbound | HTTP | Very low (zero auth) | Hot stocks / themes / northbound flow |
 | 4 | Baidu Finance | HTTP | Very low | K-line (w/ MA5/10/20) |
 | 5 | Sina Finance | HTTP | Low | Financial statements |
@@ -307,7 +319,7 @@ Just tell your AI assistant:
 | Official backups | **SSE / SZSE / BSE** | HTTP | Anonymous access; throttle batch requests | SSE/SZSE margin and BSE current quotes/books, alongside existing exchange backups |
 | **last (exclusive only)** | **Eastmoney** datacenter/push2/reportapi/search/np-weblist | HTTP | **Medium — has rate-limit risk** | Dragon-tiger / lockup / margin / block trade / shareholders / dividends / fund flow / reports / news (all via `em_get()`) |
 
-> **Architecture:** Except mootdx and baostock (both TCP client libraries), all sources use direct HTTP API calls with no third-party data wrapper in between. **Eastmoney APIs are rate-limited; all calls go through `em_get()` for serial throttling. For batch jobs, increase `EM_MIN_INTERVAL`.**
+> **Architecture:** injoyai/tdx REST is a local Go protocol service, mootdx is its same-source Python fallback, and baostock is another TCP client. Other sources use direct HTTP APIs. **Eastmoney calls all go through `em_get()` for serial throttling.**
 >
 > **Fallback:** When a primary source fails, check the "Backup Sources & Fallback Strategy" section in SKILL.md. Some core data types have independent backups on **different domains with separate rate limits**. Not every capability has a backup; always verify dates and completeness after fetching.
 
