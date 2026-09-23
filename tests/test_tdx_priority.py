@@ -44,6 +44,11 @@ class TDXPriorityTests(unittest.TestCase):
                 "_mootdx_client": MagicMock(side_effect=AssertionError("fallback must not run"))}):
             self.assertIs(self.ns["tdx_client"](), primary)
 
+    def test_lan_service_is_the_default_and_token_is_supported(self):
+        self.assertEqual(self.ns["TDX_HTTP_URL"], "http://192.168.1.74:8080/")
+        client = self.ns["TDXHTTPClient"](token="secret")
+        self.assertEqual(client.session.headers["Authorization"], "Bearer secret")
+
     def test_mootdx_is_used_when_tdx_health_check_fails(self):
         primary = MagicMock()
         primary.health.return_value = False
@@ -67,6 +72,38 @@ class TDXPriorityTests(unittest.TestCase):
         self.assertEqual(out.iloc[0].amount, 4567)
         self.assertEqual(out.iloc[0].vol, 99)
         self.assertEqual(session.get.call_args.kwargs["params"]["code"], "sh600519")
+
+    def test_adjusted_all_and_index_routes(self):
+        session = MagicMock()
+        session.get.return_value = Response({"code": 0, "msg": "ok", "data": {"Count": 0, "List": []}})
+        client = self.ns["TDXHTTPClient"]()
+        client.session = session
+        out = client.bars_all("600519", adjust="qfq")
+        self.assertEqual(out.attrs["adjust"], "qfq")
+        self.assertTrue(session.get.call_args.args[0].endswith("/kline/day/qfq/all"))
+        client.bars("000300.SH", frequency=0, start=2, offset=5, index=True)
+        self.assertTrue(session.get.call_args.args[0].endswith("/index/5minute"))
+        self.assertEqual(session.get.call_args.kwargs["params"]["start"], 2)
+
+    def test_symbols_auction_dataset_and_generic_api(self):
+        session = MagicMock()
+        session.get.side_effect = [
+            Response({"code": 0, "msg": "ok", "data": ["sh600519"]}),
+            Response({"code": 0, "msg": "ok", "data": {"Count": 1, "List": [
+                {"Time": "2026-09-18T09:25:00+08:00", "Price": 1260000,
+                 "Match": 10, "Unmatched": 2, "Flag": -1}]}}),
+            Response({"code": 0, "msg": "ok", "data": [{"Code": "600519"}]}),
+        ]
+        client = self.ns["TDXHTTPClient"]()
+        client.session = session
+        self.assertEqual(client.symbols("stocks"), ["sh600519"])
+        auction = client.call_auction("600519")
+        self.assertEqual(auction.iloc[0].price, 1260)
+        self.assertEqual(client.dataset("hy")[0]["Code"], "600519")
+        with self.assertRaises(ValueError):
+            client.api("https://evil.example/")
+        with self.assertRaises(ValueError):
+            client.api("//evil.example/quote")
 
     def test_finance_normalizes_names_and_derives_per_share_fields(self):
         session = MagicMock()

@@ -3,6 +3,9 @@ name: a-stock-data
 description: 当任务需要写代码实际获取A股及相关市场数据时使用——行情/K线/逐笔(腾讯日周月前后复权+分钟线+当日逐笔、通达信官网全市场盘后包、百度)、研报(东财+新浪+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业/板块资金流)、资金面(融资融券/大宗/股东户数/分红/资金流/ETF份额)、新闻(财联社/东财/华尔街见闻/新闻联播)、财务三表/F10/估值历史/ST名单、公告(巨潮)、打板(涨停池/连板/炸板率/监控池/异动)、ETF期权、舆情互动(互动易/上证e互动/热榜)、筹码分布、复权因子、申万行业变迁、宏观与利率(社融/PMI/中债收益率曲线/回购定盘利率/LPR/全球宏观日历)、指数成分/权重/估值/交易日历、期货与大宗商品(五家期货交易所日行情/商品与股指期权/持仓排名/期货日K含大商所/实时期货/A50/上海金)、事件驱动(业绩预告/机构调研/增减持/回购/股权质押/新股申购)、可转债等真实数据。十五层·87端点(含5备胎)·34个来源·内嵌全部可运行代码，自包含零外部文件；优先用腾讯/交易所官方等不封IP源，东财接口已内置限流防封，主源被封可查「备用源速查」降级。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
 origin: custom
 version: 3.10.0
+description: 当任务需要写代码实际获取A股数据时使用——拉取行情/K线(TDX Go+mootdx+腾讯+百度)、研报(东财+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业)、资金面(融资融券/大宗/股东户数/分红/资金流)、新闻、财务三表/F10、公告(巨潮)、打板(涨停池/连板/炸板率/重点监控池/日内异动)、ETF期权(T型报价/希腊字母/IV)、舆情互动(互动易/热榜/人气榜)、筹码分布(获利比例/成本区间)、复权因子、估值历史(PE/PB/PS+换手率+ST)、申万行业变迁史、宏观(社融/PMI)等真实数据。十二层数据源·60端点(含5备胎)·指数成分/权重/估值/交易日历/官方两融/北交所行情·内嵌全部可运行代码；行情优先用 injoyai/tdx REST，未启动时自动降级 mootdx，再由腾讯补估值字段；东财接口已内置限流防封。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
+origin: custom
+version: 3.8.2
 ---
 
 > 📦 项目主页：https://github.com/simonlin1212/a-stock-data — 更新、反馈、支持作者
@@ -34,6 +37,21 @@ version: 3.10.0
 > - **#55 聚宽代码**：`norm_ticker()` / `get_prefix()` 认 `.XSHG` / `.XSHE`，新增 `to_joinquant()`；FAQ 说明回测能力边界。
 > - 新端点统一返回带 `source` / `source_url` / `fetched_at` 的 DataFrame，「确实没有」与「接口坏了」分开报错。
 >   25 个新入口于 2026-09-20 用本文件原文代码实测，见 [本次数据源整合记录](docs/source-integration-v3.9.0.md)。
+# A股全栈数据工具包 V3.8.2
+
+十二层数据架构，60 个能力端点（55 主端点 + 5 备胎）、22 个来源。V3.8 新增的六个入口于 2026-09-05 实测；旧端点的验证日期见各章节。覆盖主板/创业板/科创板/ST，北交所覆盖依端点而异；已有备胎的数据可按「备用源速查」降级。
+
+> **V3.8.2（局域网 TDX 能力补全，2026-09-18）：** 默认首选
+> `http://192.168.1.74:8080`，仍可用 `ASTOCK_TDX_URL` 覆盖；可选
+> `ASTOCK_TDX_TOKEN` 适配带 Bearer Token 的研究服务。`TDXHTTPClient` 新增证券清单、集合竞价、
+> 股本变迁、前后复权与因子、指数全周期、分时、分页逐笔、板块/行业/统计/新股、扩展行情及
+> 受约束的通用 `api()` 入口。2026-09-18 已实测健康、报价、普通/前复权日线、集合竞价、
+> 5574 只股票、5662 条行业映射和 52 个扩展市场；能力入口与数据源计数不变。
+
+> **V3.8.1（TDX Go 首选源，2026-09-11）：** 行情、逐笔、财务和 F10 首选
+> `github.com/injoyai/tdx` 的本地 REST 服务；新增兼容既有 mootdx 调用形态的 `TDXHTTPClient`，
+> `tdx_client()` 完成健康检查与真实 K 线验活后选用，失败自动降级 mootdx。数据提供方仍是通达信，
+> 因此能力入口和来源计数不变；腾讯继续补充 PB、市值、换手率和涨跌停价。
 
 > **V3.8.0（官方指数与交易基础数据，2026-09-05）：** 新增 §12 指数与交易日历层，
 > 中证/国证成分与权重、中证 PE/股息率、深交所整月日历，以及沪深官方两融、北交所行情两个备胎。
@@ -49,7 +67,7 @@ version: 3.10.0
 >
 > - **§4.6 筹码分布 CYQ** — 补上本层名实不符的窟窿：Layer 4 叫「资金面 / **筹码**层」但 §4.1~§4.5 全是资金面数据，一直没有真正的筹码分布。**东财没有公开 CYQ 接口**（实测 `push2`/`push2his` 的 `cyq/get` 均 404），本端点用 OHLC + 换手率**本地推演**，零新增数据源。输出获利比例 / 平均成本 / 90-70 成本区间与集中度 / 筹码峰。⚠️ 初始筹码**播种为首日全部流通盘**——从全零起步会把窗口前的存量持仓一笔勾销（两个 1% 换手日会被算成 50/50，真实应约 99%/1%）。
 > - **§6.5 估值历史** — §1.2 腾讯只有**当日**估值快照，本端点给**日频历史序列**（实测茅台 2016-01-04 起 2581 行），并一次补齐此前完全缺失的四项：**换手率**（筹码分布的必需输入）、**停牌状态**、**ST 标记**（实测 000004 有 276 天 isST=1）、历史 PE/PB/PS/PCF。⚠️ **baostock 不支持北交所**，服务端报 `10004011`，本实现在**登录前**就拦掉抛 `ValueError`。
-> - **§1.4 复权因子** — §1.1 通达信 `bars()` 是**不复权**数据，跨除权日直接比价必错。新浪 qfq/hfq 因子序列一次 HTTP 约 1.8KB。⚠️ 响应末尾挂着 `/* base64 */` 注释块，**不能用 `$` 锚定正则**，须用 `raw_decode`。
+> - **§1.4 复权因子** — REST 客户端可直接用 `bars(..., adjust="qfq/hfq")`；默认不复权或降级到 mootdx 时，跨除权日需用本节新浪因子。响应末尾挂着 `/* base64 */` 注释块，**不能用 `$` 锚定正则**，须用 `raw_decode`。
 > - **§6.6 上市/退市日** — 唯一能拿到**退市日期**的零鉴权源，配合 §1.2 `is_stale` 可在筛选阶段剔除僵尸标的。
 > - **§6.7 申万行业变迁史** — §3.7 东财只有**当前**行业归属，用它做历史研究是**前视偏差**。本端点给每只股票的行业变迁（实测 12,893 行 / 5,905 只 / 38 个一级行业；有标的历史变更过 10 次）。⚠️ 申万官方只发代码不发中文名。
 > - **§11.1/§11.2 宏观层（新）** — 人民银行社融（月度 12 列）+ 国家统计局 PMI。⚠️ 社融链路是三级跳，未发布月份**整行丢弃**而非返回 NaN（否则调用方会把 12 行当 12 个月真数据）；PMI 正文是全角括号**内带空格**，空白必须**整个删掉**才匹配得到。
@@ -110,6 +128,8 @@ version: 3.10.0
 
 ```
 行情层（实时，不封IP）
+├── injoyai/tdx   → K线 + 五档盘口 + 逐笔成交 + 财务/F10 (Go REST → TCP 7709，首选)
+├── mootdx        → 同源 Python 自动降级 (TCP 7709)
 ├── 腾讯财经 API   → PE/PB/市值/换手率/涨跌停/指数/ETF (HTTP)
 ├── 腾讯 K 线      → 沪深日/周/月前后复权 + 1~60 分钟，三入口轮换 (V3.9 新增)
 ├── 通达信盘后包   → 某交易日沪深北全市场日线含成交额 (tdx.com.cn HTTP，V3.9 新增)
@@ -154,6 +174,8 @@ version: 3.10.0
 基础数据层
 ├── mootdx finance → 季报快照 (37字段, EPS/ROE/净利)
 ├── mootdx F10     → 最新提示 (公告/报道/大宗/两融/风险提示摘要；2026-09 起只剩这一类)
+├── TDX REST→mootdx finance → 季报快照 (37字段, EPS/ROE/净利)
+├── TDX REST→mootdx F10     → 公司资料 (9大类文本)
 ├── 东财个股信息   → 行业/总股本/流通股/市值/上市日期 (push2)
 ├── 新浪财报三表   → 资产负债表/利润表/现金流量表 (quotes.sina.cn)
 ├── baostock 估值历史 → 日频 PE/PB/PS/PCF + 换手率 + 停牌 + ST (不支持北交所，V3.7 新增)
@@ -163,7 +185,7 @@ version: 3.10.0
 
 公告层
 ├── 巨潮 cninfo    → 公告全文检索+下载 (cninfo.com.cn)
-└── mootdx F10     → 最新公告摘要
+└── TDX REST→mootdx F10 → 最新公告摘要
 
 打板层 (V3.3 新增)
 ├── 东财涨停池     → 连板数/几天几板/封板资金/炸板次数/行业 (push2ex)
@@ -233,6 +255,11 @@ ETF期权层 (V3.3 新增)
 | 1.5 | `baidu_kline_with_ma(code)` | 日K线带 MA5/10/20 | 百度 |
 | 1.6 | `sina_adjust_factor(code, kind)` / `apply_adjust(bars, factors)` | 复权因子 qfq/hfq + 套用到不复权K线 | 新浪 |
 | 1.7 | `tdx_client()` → `.bars()` / `.quotes()` / `.transaction()` | K线(多周期,不复权) / 五档盘口 / 逐笔成交（⚠️ 2026-09 起返回空，#52，留档） | 通达信 |
+| 前置 | `norm_ticker(code)` | 任意写法→纯6位（`SH600519`/`600519.SH` 皆可；解析失败抛错不返空） | 本地 |
+| 1.1 | `tdx_client()` → `TDXHTTPClient` / mootdx fallback | 普通/前后复权K线 / 五档 / 集合竞价 / 逐笔 / 财务 / F10 / 板块与扩展行情 | 通达信 |
+| 1.2 | `tencent_quote(codes)` | 实时价/PE/PB/市值/换手/涨跌停/指数/ETF（带 `is_stale` 僵尸报价标志） | 腾讯 |
+| 1.3 | `baidu_kline_with_ma(code)` | 日K线带 MA5/10/20 | 百度 |
+| 1.4 | `sina_adjust_factor(code, kind)` / `apply_adjust(bars, factors)` | 复权因子 qfq/hfq + 套用到不复权K线 | 新浪 |
 | 2.1 | `eastmoney_reports(code)` / `download_pdf(rec)` | 个股研报+评级+三年EPS / 研报PDF | 东财 |
 | 2.1 | `eastmoney_industry_reports(industry_code)` | 行业研报 | 东财 |
 | 2.2 | `ths_eps_forecast(code)` | 机构一致预期 EPS | 同花顺 |
@@ -320,6 +347,13 @@ ETF期权层 (V3.3 新增)
 | **5（仅独有数据才用）** | **东财 eastmoney** | HTTP | **有风控，会封 IP** | 见下 |
 
 **凡是行情 / K线 / 实时价 / 市值 / 财务三表能从腾讯、交易所官方或新浪拿到的，一律走它们**——实测不封 IP，可放心使用（仍应控制频率）。
+| **1（首选）** | **injoyai/tdx REST（通达信）** | 本地 HTTP → TCP 7709 | **不封 IP** | K线、五档、逐笔、财务、F10；支持连接池与断线重连 |
+| **2（自动降级）** | **mootdx（通达信）** | Python → TCP 7709 | **不封 IP** | 与首选源同协议的兼容后备 |
+| **3** | **腾讯财经** | HTTP GBK | **不封 IP** | 实时价、PE/PB/市值/换手率/涨跌停、指数、ETF |
+| **4** | 新浪 / 巨潮 / 同花顺 | HTTP | 低 | 财报三表、公告、一致预期/热点 |
+| **4（仅独有数据才用）** | **东财 eastmoney** | HTTP | **有风控，会封 IP** | 见下 |
+
+**凡是行情 / K线 / 逐笔 / 财务 / F10 能从 TDX REST 拿到的，一律先走 TDX；服务不可用时自动降级 mootdx。PB / 市值 / 换手率 / 涨跌停价再走腾讯。**
 
 ### 东财只用于它「独有、别处拿不到」的数据
 
@@ -412,12 +446,15 @@ ETF期权层 (V3.3 新增)
 ## Prerequisites
 
 ```bash
-pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
+pip install requests pandas stockstats numpy baostock xlrd openpyxl
+# 仅在不启动 TDX REST、仍希望自动降级时安装：pip install mootdx
 ```
 
 | 依赖 | 版本要求 | 用途 |
 |------|---------|------|
 | mootdx | >= 0.10 | TCP 财务快照+F10（非 HTTP 依赖之一；K 线/盘口/逐笔 2026-09 起返回空，#52）；0.11.x 用 `tdx_client()` 规避 BESTIP bug，见下节 |
+| injoyai/tdx REST | 首选服务 | Go 1.25+；客户端默认连接局域网 `192.168.1.74:8080`，可用环境变量覆盖 |
+| mootdx | >= 0.10 | TDX REST 未运行时的自动降级；0.11.x 用 `_mootdx_client()` 规避 BESTIP bug |
 | requests | any | 所有HTTP API直连 |
 | pandas | any | 数据处理+HTML表格解析 |
 | stockstats | any | 技术指标计算（RSI/MACD/BOLL等） |
@@ -426,7 +463,7 @@ pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl
 | xlrd | >= 2.0 | 读 `.xls`（§6.7 申万行业分类、§12 中证） |
 | openpyxl | any | 读 `.xlsx`（§11.1 社融、§12 国证、深交所两融） |
 
-> **架构：** 除 mootdx 与 baostock（均为 TCP 客户端库）外，所有数据源均为直连 HTTP API，不经第三方数据封装。每个 HTTP 端点的底层 URL/参数完全暴露，方便调试和定制。
+> **架构：** injoyai/tdx REST 是本地 Go 协议服务，mootdx 是同源 Python 降级；baostock 是另一 TCP 客户端。其余数据源均为直连 HTTP API。
 
 ### iwencai API Key（仅语义搜索需要）
 
@@ -441,7 +478,24 @@ export IWENCAI_BASE_URL="https://openapi.iwencai.com"
 
 其他数据源（腾讯 / 东财 / 同花顺 / 百度股市通 / 新浪 / 巨潮 / 财联社 / mootdx / baostock / 申万 / 人民银行 / 国家统计局 / 沪深北交易所 / 中证 / 国证 / 通达信官网 / 华尔街见闻 / 央视网 / 中债 / 中国货币网 / 五家期货交易所 / 上金所）全部免费，无需 key。
 
-### mootdx 客户端（必读，规避 0.11.x BESTIP 空串 bug）
+### TDX 首选客户端 + mootdx 自动降级
+
+> **首选链路：** 优先连接 `github.com/injoyai/tdx` 提供的局域网 REST 服务（默认
+> `http://192.168.1.74:8080`）；服务未启动或启动阶段验活失败时，自动降级到 mootdx。
+> Go 版 TDX 直接实现通达信协议，覆盖 K 线、五档、逐笔、财务、F10、复权、集合竞价和板块数据，
+> 且避开 mootdx 的停更与 `httpx<0.26` 依赖冲突。腾讯仍负责 TDX 协议不提供的 PB、市值、换手率、涨跌停价。
+
+先启动 TDX 服务（仓库内已提供入口）：
+
+```bash
+cd /path/to/tdx
+go run ./example/HTTPServer
+export ASTOCK_TDX_URL=http://192.168.1.74:8080
+# 仅 tdx-research 等启用鉴权的入口需要：export ASTOCK_TDX_TOKEN=your-token
+```
+
+**统一使用以下 helper；既有调用无需改写，并新增 `.symbols()` / `.call_auction()` /
+`.gbbq_all()` / `.bars_all()` / `.adjustment_factors()` / `.dataset()` / `.blocks()` / `.ex()` / `.api()`：**
 
 > **已知 bug（mootdx 0.11.x）：** 全新安装后 `Quotes.factory(market='std')` 裸调用可能抛 `ValueError: not enough values to unpack (expected 2, got 0)`。
 > 根因：`~/.mootdx/config.json` 的 `BESTIP.HQ` 初始是空字符串 `""`（不是缺失键），mootdx 用 `dict.get(key, default)` 取不到 default，拆包失败。**老用户（config 曾填充过 IP）不会触发，所以容易漏测。**
@@ -450,8 +504,311 @@ export IWENCAI_BASE_URL="https://openapi.iwencai.com"
 **统一用以下 helper 创建客户端（所有 mootdx 调用都走它）：**
 
 ```python
+import os
 import socket
-from mootdx.quotes import Quotes
+from urllib.parse import urljoin
+
+import pandas as pd
+import requests
+
+TDX_HTTP_URL = os.getenv("ASTOCK_TDX_URL", "http://192.168.1.74:8080").rstrip("/") + "/"
+TDX_HTTP_TOKEN = os.getenv("ASTOCK_TDX_TOKEN", "").strip()
+
+
+def _tdx_symbol(code: str) -> str:
+    """TDX REST 使用 sh/sz/bj + 6 位代码；拒绝明显错误输入，避免静默查错标的。"""
+    raw = str(code).strip().lower()
+    if raw.endswith((".sh", ".sz", ".bj")):
+        raw = raw[-2:] + raw[:-3]
+    if raw.startswith(("sh", "sz", "bj")):
+        market, digits = raw[:2], raw[2:]
+    else:
+        digits = raw
+        if digits.startswith("92") or digits.startswith(("4", "8")):
+            market = "bj"
+        elif digits.startswith(("5", "6", "9")) or digits in {
+                "000300", "000905", "000016", "000688", "000852", "000010"}:
+            market = "sh"
+        else:
+            market = "sz"
+    if len(digits) != 6 or not digits.isdigit():
+        raise ValueError(f"无效证券代码: {code!r}")
+    if digits.startswith("000"):
+        if market == "bj":
+            raise ValueError(f"证券代码与市场不一致: {code!r}")
+    else:
+        natural = ("bj" if digits.startswith(("4", "8", "92")) else
+                   "sh" if digits.startswith(("5", "6", "9")) else "sz")
+        if market != natural:
+            raise ValueError(f"证券代码与市场不一致: {code!r}")
+    return market + digits
+
+
+class TDXHTTPClient:
+    """injoyai/tdx REST 适配器；默认使用局域网服务，核心返回对齐 mootdx 示例。"""
+
+    _KLINE_ROUTES = {
+        0: "/kline/5minute", 1: "/kline/15minute", 2: "/kline/30minute",
+        3: "/kline/60minute", 4: "/kline/day", 5: "/kline/week",
+        6: "/kline/month", 7: "/kline/minute", 8: "/kline/minute", 9: "/kline/day",
+        10: "/kline/quarter", 11: "/kline/year",
+    }
+
+    _DATASET_ROUTES = {
+        "zs": "/tdx/zs", "bk": "/tdx/bk", "stat": "/tdx/stat",
+        "stat2": "/tdx/stat2", "xgsg": "/tdx/xgsg", "hy": "/tdx/hy",
+        "spblock": "/spblock",
+    }
+
+    def __init__(self, base_url: str = TDX_HTTP_URL, timeout: float = 10.0,
+                 token: str = TDX_HTTP_TOKEN):
+        self.base_url = base_url.rstrip("/") + "/"
+        self.timeout = timeout
+        self.session = requests.Session()
+        if token:
+            self.session.headers.update({"Authorization": f"Bearer {token}"})
+
+    def api(self, path: str, params: dict = None, request_timeout=None, **kwargs):
+        """访问任意已注册的 TDX GET 路由；path 只能是相对服务路径，避免绕过 base_url。"""
+        if (not isinstance(path, str) or not path.startswith("/") or path.startswith("//")
+                or "://" in path or ".." in path
+                or any(ch in path for ch in ("\\", "?", "#", "\r", "\n"))):
+            raise ValueError("path 必须是 TDX 服务内的绝对路径，如 /tdx/hy")
+        query = dict(params or {})
+        query.update({key: value for key, value in kwargs.items() if value is not None})
+        response = self.session.get(
+            urljoin(self.base_url, path.lstrip("/")), params=query,
+            timeout=self.timeout if request_timeout is None else request_timeout)
+        response.raise_for_status()
+        payload = response.json()
+        if not isinstance(payload, dict) or payload.get("code") != 0:
+            raise RuntimeError(f"TDX REST 请求失败: {payload.get('msg') if isinstance(payload, dict) else payload!r}")
+        return payload.get("data")
+
+    def _get(self, path: str, request_timeout=None, **params):
+        return self.api(path, params=params, request_timeout=request_timeout)
+
+    def health(self) -> bool:
+        try:
+            data = self._get("/")
+            return isinstance(data, dict) and data.get("status") == "running"
+        except Exception:
+            return False
+
+    @staticmethod
+    def _kline_frame(data, source="tdx-lan", adjust="none") -> pd.DataFrame:
+        rows = (data.get("List") or []) if isinstance(data, dict) else []
+        out = pd.DataFrame([{
+            "open": row.get("Open", 0) / 1000,
+            "close": row.get("Close", 0) / 1000,
+            "high": row.get("High", 0) / 1000,
+            "low": row.get("Low", 0) / 1000,
+            "last_close": row.get("Last", 0) / 1000,
+            "vol": row.get("Volume", 0),
+            "amount": row.get("Amount", 0) / 1000,
+            "datetime": row.get("Time"),
+        } for row in rows])
+        if not out.empty:
+            out["datetime"] = pd.to_datetime(out["datetime"])
+            out = out.set_index("datetime", drop=False)
+        out.attrs.update({"source": source, "adjust": adjust,
+                          "count": data.get("Count", len(rows)) if isinstance(data, dict) else len(rows)})
+        return out
+
+    def bars(self, symbol: str, frequency: int = 9, offset: int = 10,
+             start: int = 0, adjust: str = "none", fetch_all: bool = False,
+             index: bool = False) -> pd.DataFrame:
+        """K 线。adjust=none/qfq/hfq 仅适用于日线；fetch_all=True 使用全量路由。"""
+        if frequency not in self._KLINE_ROUTES:
+            raise ValueError(f"TDX REST 不支持 frequency={frequency}")
+        if isinstance(offset, bool) or not isinstance(offset, int) or not 1 <= offset <= 800:
+            raise ValueError("offset 必须是 1..800 的整数；超过 800 请分批或使用 /all 端点")
+        if isinstance(start, bool) or not isinstance(start, int) or not 0 <= start <= 65535:
+            raise ValueError("start 必须是 0..65535 的整数")
+        if adjust not in {"none", "qfq", "hfq"}:
+            raise ValueError("adjust 必须是 none/qfq/hfq")
+        if index and adjust != "none":
+            raise ValueError("指数 K 线不支持复权")
+        code = _tdx_symbol(symbol)
+        if index:
+            path = self._KLINE_ROUTES[frequency].replace("/kline/", "/index/")
+            path += "/all" if fetch_all else ""
+            params = {"code": code}
+        elif adjust != "none":
+            if frequency not in {4, 9}:
+                raise ValueError("qfq/hfq 仅支持日线 frequency=4/9")
+            path = f"/kline/day/{adjust}" + ("/all" if fetch_all else "")
+            params = {"code": code}
+        else:
+            path = self._KLINE_ROUTES[frequency] + ("/all" if fetch_all else "")
+            params = {"code": code}
+        if not fetch_all:
+            params.update({"start": start, "count": offset})
+        data = self._get(path, request_timeout=60 if (fetch_all or adjust != "none") else None, **params)
+        return self._kline_frame(data, adjust=adjust)
+
+    def bars_all(self, symbol: str, frequency: int = 9,
+                 adjust: str = "none", index: bool = False) -> pd.DataFrame:
+        return self.bars(symbol, frequency=frequency, adjust=adjust,
+                         fetch_all=True, index=index)
+
+    def adjustment_factors(self, symbol: str) -> pd.DataFrame:
+        """日线仿射复权因子；复权元价 = Mul × 原始元价 + Add。"""
+        data = self._get("/kline/day/factors", code=_tdx_symbol(symbol), request_timeout=60)
+        rows = data.get("List") if isinstance(data, dict) else data
+        return pd.DataFrame(rows or [])
+
+    @staticmethod
+    def _level(row: dict, side: str, level: int, field: str):
+        levels = row.get(side, []) or []
+        item = levels[level - 1] if len(levels) >= level else {}
+        value = item.get(field, 0)
+        return value / 1000 if field == "Price" else value
+
+    def quotes(self, symbol) -> pd.DataFrame:
+        symbols = [symbol] if isinstance(symbol, str) else list(symbol)
+        data = self._get("/quote", codes=",".join(_tdx_symbol(x) for x in symbols)) or []
+        rows = []
+        for item in data:
+            kline = item.get("Kline") or {}
+            row = {
+                "code": item.get("Code"), "price": kline.get("Close", 0) / 1000,
+                "open": kline.get("Open", 0) / 1000, "high": kline.get("High", 0) / 1000,
+                "low": kline.get("Low", 0) / 1000, "last_close": kline.get("Last", 0) / 1000,
+                "vol": kline.get("Volume", 0), "amount": kline.get("Amount", 0) / 1000,
+                "servertime": item.get("ServerTime"),
+            }
+            for level in range(1, 6):
+                row[f"bid{level}"] = self._level(item, "BuyLevel", level, "Price")
+                row[f"ask{level}"] = self._level(item, "SellLevel", level, "Price")
+                row[f"bid_vol{level}"] = self._level(item, "BuyLevel", level, "Number")
+                row[f"ask_vol{level}"] = self._level(item, "SellLevel", level, "Number")
+            rows.append(row)
+        return pd.DataFrame(rows)
+
+    def symbols(self, kind: str = "stocks", exchange: str = None):
+        """证券清单：stocks/etfs/indexes；传 exchange=sh/sz/bj 时返回该交易所全部证券。"""
+        if exchange is not None:
+            exchange = str(exchange).lower()
+            if exchange not in {"sh", "sz", "bj"}:
+                raise ValueError("exchange 必须是 sh/sz/bj")
+            data = self._get("/code/all", exchange=exchange)
+            return (data.get("List") or data.get("Codes") or []) if isinstance(data, dict) else (data or [])
+        routes = {"stocks": "/code/stocks", "etfs": "/code/etfs", "indexes": "/code/indexes"}
+        if kind not in routes:
+            raise ValueError("kind 必须是 stocks/etfs/indexes")
+        return self._get(routes[kind]) or []
+
+    def security_count(self, exchange: str):
+        exchange = str(exchange).lower()
+        if exchange not in {"sh", "sz", "bj"}:
+            raise ValueError("exchange 必须是 sh/sz/bj")
+        return self._get("/count", exchange=exchange)
+
+    def call_auction(self, symbol: str) -> pd.DataFrame:
+        data = self._get("/call_auction", code=_tdx_symbol(symbol))
+        rows = (data.get("List") or []) if isinstance(data, dict) else []
+        out = pd.DataFrame([{
+            "time": row.get("Time"), "price": row.get("Price", 0) / 1000,
+            "matched_volume": row.get("Match", 0),
+            "unmatched_volume": row.get("Unmatched", 0), "flag": row.get("Flag"),
+        } for row in rows])
+        if not out.empty:
+            out["time"] = pd.to_datetime(out["time"])
+        return out
+
+    def gbbq(self, symbol: str):
+        return self._get("/gbbq", code=_tdx_symbol(symbol))
+
+    def gbbq_all(self, symbols=None):
+        params = {}
+        if symbols is not None:
+            values = [symbols] if isinstance(symbols, str) else list(symbols)
+            if not 1 <= len(values) <= 100:
+                raise ValueError("gbbq_all 批量代码数量必须是 1..100")
+            params["codes"] = ",".join(_tdx_symbol(value) for value in values)
+        return self._get("/gbbq/all", request_timeout=120, **params)
+
+    def minute(self, symbol: str, date: str = None):
+        params = {"code": _tdx_symbol(symbol)}
+        path = "/minute"
+        if date is not None:
+            path = "/minute/history"
+            params["date"] = str(date).replace("-", "")
+        return self._get(path, **params)
+
+    def dataset(self, name: str):
+        """通达信板块/行业/统计/新股数据：zs,bk,stat,stat2,xgsg,hy,spblock。"""
+        if name not in self._DATASET_ROUTES:
+            raise ValueError(f"name 必须是 {list(self._DATASET_ROUTES)}")
+        return self._get(self._DATASET_ROUTES[name], request_timeout=60)
+
+    def blocks(self, file: str = "block_gn.dat", with_index: bool = True):
+        if not isinstance(file, str) or "/" in file or "\\" in file or ".." in file:
+            raise ValueError("file 必须是安全的板块文件名，如 block_gn.dat")
+        path = "/block/data/index" if with_index else "/block/data"
+        return self._get(path, file=file, request_timeout=60)
+
+    def ex(self, route: str, **params):
+        """扩展行情入口；route 如 markets/quote/bars/trade/bars/range。"""
+        clean = str(route).strip("/")
+        allowed = {"markets", "count", "instruments", "quote", "quote_list", "bars",
+                   "minute", "minute/hist", "trade", "trade/hist", "bars/range"}
+        if clean not in allowed:
+            raise ValueError(f"不支持的扩展行情 route: {route!r}")
+        return self._get("/ex/" + clean, **params)
+
+    def transaction(self, symbol: str, date: str = None,
+                    start: int = None, count: int = 200) -> pd.DataFrame:
+        params = {"code": _tdx_symbol(symbol)}
+        if start is None:
+            path = "/trade/history/day" if date else "/trade/all"
+        else:
+            if isinstance(start, bool) or not isinstance(start, int) or not 0 <= start <= 65535:
+                raise ValueError("start 必须是 0..65535 的整数")
+            if isinstance(count, bool) or not isinstance(count, int) or not 1 <= count <= 65535:
+                raise ValueError("count 必须是 1..65535 的整数")
+            path = "/trade/history" if date else "/trade"
+            params.update({"start": start, "count": count})
+        if date:
+            params["date"] = str(date).replace("-", "")
+        data = self._get(path, **params)
+        rows = (data.get("List") or []) if isinstance(data, dict) else []
+        return pd.DataFrame([{
+            "time": row.get("Time"), "price": row.get("Price", 0) / 1000,
+            "vol": row.get("Volume", 0), "num": row.get("Number", 0),
+            "buyorsell": row.get("Status"),
+        } for row in rows])
+
+    def finance(self, symbol: str) -> pd.DataFrame:
+        full = _tdx_symbol(symbol)
+        data = self._get("/finance", exchange=full[:2], code=full[2:])
+        if not isinstance(data, dict):
+            return pd.DataFrame()
+        row = {key.lower(): value for key, value in data.items()}
+        shares = row.get("zongguben") or 0
+        equity = row.get("jingzichan") or 0
+        profit = row.get("jinglirun") or 0
+        row.update({
+            "profit": profit, "income": row.get("zhuyingshouru"),
+            "eps": profit / shares if shares else None,
+            "bvps": equity / shares if shares else None,
+            "roe": profit / equity * 100 if equity else None,
+            "meigujingzichan": equity / shares if shares else None,
+            "meigugongjijin": row.get("zibengongjijin", 0) / shares if shares else None,
+            "meiguweifenpeilirun": row.get("weifenlirun", 0) / shares if shares else None,
+        })
+        return pd.DataFrame([row])
+
+    def F10(self, symbol: str, name: str) -> str:
+        full = _tdx_symbol(symbol)
+        cats = self._get("/company/category", exchange=full[:2], code=full[2:]) or []
+        category = next((x for x in cats if x.get("name") == name), None)
+        if category is None:
+            raise ValueError(f"TDX F10 不存在分类 {name!r}；可选: {[x.get('name') for x in cats]}")
+        return self._get(
+            "/company/content", exchange=full[:2], code=full[2:],
+            filename=category["filename"], start=category["start"], length=category["length"])
 
 # 实测可用的备选服务器（按延迟排序，2026-06 验证）
 _TDX_SERVERS = [
@@ -498,7 +855,7 @@ def _validate(client, market: str = 'std', check: str = 'bars') -> bool:
     except Exception:
         return False
 
-def tdx_client(market='std', check='bars'):
+def _mootdx_client(market='std', check='bars'):
     """
     创建 mootdx 客户端，规避 0.11.x BESTIP.HQ 空串 bug + 坏服务器静默空表（#43）。
     check: 'bars'（默认，K 线 / 盘口 / 逐笔）或 'finance'（财务快照 / F10），决定用哪类请求验活（#52）。
@@ -510,6 +867,14 @@ def tdx_client(market='std', check='bars'):
     """
     if check not in ('bars', 'finance'):
         raise ValueError("check 只能是 'bars' 或 'finance'")
+    try:
+        from mootdx.quotes import Quotes
+    except ImportError as exc:
+        raise RuntimeError(
+            "TDX REST 不可用，且未安装 mootdx 降级客户端。"
+            "请启动 injoyai/tdx 服务，或执行 pip install mootdx。"
+        ) from exc
+
     for ip, port in _TDX_SERVERS:
         if not _probe(ip, port):
             continue
@@ -534,15 +899,33 @@ def tdx_client(market='std', check='bars'):
                  "财务与 F10 用 tdx_client(check='finance') 仍可取。")
     raise RuntimeError("所有 mootdx 服务器均无法取到数据（TCP 可达但返回空 / 被 reset）。" + hint)
 
-# 用法：client = tdx_client()                  # K 线 / 盘口 / 逐笔（#52：目前普遍取不到，见 §1.7 警告）
-#       client = tdx_client(check='finance')   # 财务快照 / F10（正常）
+def tdx_client(market='std', check='bars'):
+    """首选 injoyai/tdx REST；不可用时自动降级 mootdx。"""
+    if check not in ('bars', 'finance'):
+        raise ValueError("check 只能是 'bars' 或 'finance'")
+    if market == "std":
+        primary = TDXHTTPClient()
+        if primary.health() and _validate(primary, market, check):
+            return primary
+    return _mootdx_client(market, check)
+
+# 用法：client = tdx_client()                  # TDX REST → mootdx fallback
+#       client = tdx_client(check='finance')   # 财务快照 / F10
 ```
 
-> **海外 IP 用户：** mootdx 走通达信 TCP 7709，海外环境通常全部超时。`tdx_client()` 会快速失败给出明确报错，而非死等。
->
-> **⚠️ 行情命令失效（#52，2026-09-20 实测）：** 内置 10 台服务器逐台测试，TCP 均可达，`finance` / `xdxr` 正常、
-> `F10` 只剩「最新提示」一类（见 §6.2），但 `bars` / `quotes` / `transaction` 全部返回 0 行。财务与 F10 调用请传 `check='finance'`；
-> K 线改走 §1.2 腾讯 / §1.3 通达信盘后包，实时价与五档走 §1.1 腾讯，当日逐笔走 §1.4 腾讯。
+| 能力 | 推荐调用 | 说明 |
+|---|---|---|
+| 股票/ETF/指数清单 | `client.symbols("stocks"/"etfs"/"indexes")` | 也可按 `exchange="sh"` 取单所全部证券 |
+| 普通/复权 K 线 | `bars(..., adjust="none/qfq/hfq", start=0)` | `bars_all()` 取全量；`index=True` 走指数路由 |
+| 复权因子 | `adjustment_factors(code)` | 仿射因子满足 `复权元价 = Mul × 原始元价 + Add` |
+| 集合竞价/分时/逐笔 | `call_auction()` / `minute()` / `transaction()` | 逐笔传 `start` 可分页，不传则取当日/指定日全量 |
+| 财务/F10/股本变迁 | `finance()` / `F10()` / `gbbq()` / `gbbq_all()` | `gbbq_all` 批量最多 100 个代码；全市场请求较慢 |
+| 板块与配置数据 | `blocks()` / `dataset()` | `dataset` 支持 zs/bk/stat/stat2/xgsg/hy/spblock |
+| 期货/港股/外盘 | `ex(route, **params)` | 服务需启用 ExHq；支持 markets/quote/bars/minute/trade 等 |
+| 其他 GET 路由 | `api("/route", key=value)` | 只允许当前 TDX 服务内的相对路径，服务错误不会伪装为空结果 |
+
+> **部署提示：** `ASTOCK_TDX_URL` 可指向同机或内网 TDX 服务；不要把未加认证的行情服务直接暴露到公网。
+> 海外环境下两种客户端最终都需要访问通达信 TCP 7709，仍建议在国内网络部署 TDX 服务，再通过受控内网访问。
 
 ### 市场前缀规则（全局通用）
 
@@ -802,6 +1185,7 @@ import functools
 import math
 import re
 from datetime import date as _date_cls, datetime, timezone
+### 1.1 TDX Go 首选 / mootdx 降级 — K线 + 五档盘口 + 逐笔成交
 
 import pandas as pd
 import requests
@@ -824,6 +1208,25 @@ def _v39_http(url, params=None, data=None, headers=None, method="GET", timeout=(
     except requests.RequestException as exc:
         raise RuntimeError(f"请求 {url} 失败: {type(exc).__name__}: {exc}") from exc
     return response
+```python
+client = tdx_client()  # TDX REST 健康且真实取数成功时首选，否则自动返回 mootdx 客户端
+
+# === K线数据 ===
+# ⚠️ 参数名是 frequency（不是 category！传 category 会被 **kwargs 静默吞掉，
+#    永远退化成默认 frequency=9 日线，拿不到分钟数据）。
+# 统一频率值表（TDXHTTPClient 与 mootdx 0.11.7 对齐）：
+#   0=5分钟  1=15分钟  2=30分钟  3=60分钟(1小时)  4=日线  5=周线  6=月线
+#   8=1分钟  9=日线(默认)  10=季线  11=年线        （7=1分钟除权口径,少用）
+klines = client.bars(symbol='688017', frequency=9, offset=10)    # 日线
+min1   = client.bars(symbol='688017', frequency=8, offset=240)   # 1分钟（一个交易日≈240根）
+min5   = client.bars(symbol='688017', frequency=0, offset=48)    # 5分钟
+# 返回: open, close, high, low, vol, amount, datetime
+# 默认返回【不复权】原始价。以下是 REST 专属能力；若已降级到 mootdx，
+# 跨除权日请用 §1.4 因子或其他复权源。
+if isinstance(client, TDXHTTPClient):
+    qfq = client.bars(symbol='688017', frequency=9, offset=100, adjust="qfq")
+    all_qfq = client.bars_all(symbol='688017', frequency=9, adjust="qfq")
+    auction = client.call_auction(symbol='688017')
 
 
 def _v39_json(response):
@@ -1023,6 +1426,7 @@ def _em_day(value):
 > **V3.10.0 起本层重排：能用的在前，2026-09 起失效的 mootdx 行情命令移到最后（§1.7，留档）。**
 > 旧编号 → 新编号：1.2→1.1 腾讯实时、1.5→1.2 腾讯 K 线、1.6→1.3 通达信盘后包、1.3→1.5 百度、1.4→1.6 新浪复权因子、1.1→1.7 mootdx；
 > §1.4 腾讯逐笔为新增。CHANGELOG 与文件开头的历史版本说明里写的仍是旧编号。
+**通达信协议不提供 PB / 市值 / 换手率 / 涨跌停价** — 这些走腾讯财经。
 
 ### 1.1 腾讯财经 API — PE/PB/市值/换手率/涨跌停/指数/ETF
 
@@ -1641,6 +2045,7 @@ print("最近5根K线:", data["rows"][-5:])
 ### 1.6 新浪复权因子 — qfq / hfq（V3.7.0 新增）
 
 **核心价值：** §1.7 `tdx_client().bars()`、§1.2 `tencent_kline(adjust='')`、§1.3 `tdx_daily_package()` 返回的是**不复权**数据，跨除权日直接比价必然出错。
+**核心价值：** §1.1 REST 客户端现在可直接返回前/后复权日线；但默认 `adjust="none"` 及 mootdx 降级仍是**不复权**数据。本节保留独立新浪因子，供降级、交叉验证或自行套算使用。
 本端点给出复权因子序列，一次 HTTP、约 1.8KB、零鉴权。
 
 ```python
@@ -3692,12 +4097,13 @@ xwlb = cctv_news("2026-09-18", with_content=False)
 
 ## Layer 6: 基础数据层
 
-### 6.1 mootdx 财务快照（37字段季报数据）
+### 6.1 TDX Go 首选 / mootdx 降级：财务快照
 
 ```python
 from mootdx.quotes import Quotes
 
 client = tdx_client(check='finance')  # 见 Prerequisites 的 tdx_client()；财务/F10 按 finance 验活（#52：K 线命令失效不影响这里）
+client = tdx_client()  # TDX REST → mootdx fallback
 
 # market: 0=深圳, 1=上海
 fin = client.finance(symbol='688017')
@@ -3706,16 +4112,17 @@ fin = client.finance(symbol='688017')
 #   eps(每股收益), bvps(每股净资产), roe(净资产收益率%)
 #   profit(净利润), income(主营收入)
 #   meigujingzichan(每股净资产), meigugongjijin(每股公积金)
-#   meiguweifeipeili(每股未分配利润)
+#   meiguweifenpeilirun(每股未分配利润)
 #   等37个季报财务字段
 ```
 
-### 6.2 mootdx F10（公司文本资料）
+### 6.2 TDX Go 首选 / mootdx 降级：F10 公司资料
 
 ```python
 from mootdx.quotes import Quotes
 
 client = tdx_client(check='finance')  # 见 Prerequisites 的 tdx_client()；财务/F10 按 finance 验活（#52：K 线命令失效不影响这里）
+client = tdx_client()  # TDX REST → mootdx fallback
 
 # 先用 F10C 列出服务器实际提供的类别，不要写死类别名：
 # 请求不存在的类别时 mootdx 不报错，而是返回 {类别: 文本} 的 dict，按字符串切片会抛 TypeError。
@@ -4233,11 +4640,12 @@ for a in anns[:10]:
     print(f"  {a['date']} | {a['type']} | {a['title']}")
 ```
 
-### 7.2 mootdx F10 公告摘要
+### 7.2 TDX Go 首选 / mootdx 降级：F10 公告摘要
 
 ```python
 from mootdx.quotes import Quotes
 client = tdx_client(check='finance')  # 见 Prerequisites 的 tdx_client()；财务/F10 按 finance 验活（#52：K 线命令失效不影响这里）
+client = tdx_client()  # TDX REST → mootdx fallback
 text = client.F10(symbol='688017', name='最新提示')
 # 包含最近的公告/分红/股东大会决议等摘要
 ```
@@ -7263,6 +7671,9 @@ bj_quote = bse_quote_backup("2026-09-04", code="920021")
 |--------|--------|------|--------|---------|
 | 1 | **腾讯财经** (HTTP) | 实时PE/PB/市值/换手率/涨跌停/指数/ETF + 日周月/分钟 K 线（§1.2）+ 当日逐笔（§1.4） | 稳定 | 低（K 线单入口约 600 次后限流，已三入口轮换） |
 | 2 | **mootdx** (TCP) | 财务快照+F10；K线/五档/逐笔 2026-09 起返回空（#52） | 财务/F10 稳定，行情命令失效 | 极低 |
+| 1 | **injoyai/tdx REST** (本地 HTTP→TCP) | K线+五档盘口+逐笔成交+财务快照+F10 | 首选；连接池+断线重连 | 极低 |
+| 降级 | **mootdx** (TCP) | 同源自动降级 | TDX REST 未启动时启用 | 极低 |
+| 2 | **腾讯财经** (HTTP) | 实时PE/PB/市值/换手率/涨跌停/指数/ETF | 稳定 | 低 |
 | 3 | **东财 datacenter** (HTTP) | 龙虎榜/解禁/融资融券/大宗交易/股东户数/分红/个股信息 | 稳定 | 低 |
 | 4 | **东财 push2/push2his** (HTTP) | 行业板块/个股资金流分钟级+120日 | 稳定 | 低 |
 | 5 | **iwencai** (OpenAPI) | NL主题搜索研报(唯一能力) | 需X-Claw Header | 低 |
@@ -7304,6 +7715,8 @@ bj_quote = bse_quote_backup("2026-09-04", code="920021")
 
 **原则：** 行情走腾讯（§1.2 K 线、§1.4 逐笔）+ 通达信官网盘后包，mootdx 只用于财务 / F10（#52）；研报走东财+iwencai，新浪作第二来源；资金面走东财 datacenter+push2，**信号层走同花顺+百度+东财直连接口**；期货、利率、黄金走交易所与官方机构。除 mootdx / baostock 两个 TCP 客户端外全部直连 HTTP。
 
+**原则：** 行情先走 injoyai/tdx REST，失败自动降级 mootdx，估值字段由腾讯补齐；研报走东财+iwencai，资金面走东财 datacenter+push2。除本地 TDX 服务及 mootdx / baostock TCP 客户端外，其余均直连 HTTP。
+
 **降级：** 任一主源被封/失效时，先查下方「备用源速查 & 降级策略」——每类数据都备有一条**不同域名、不同风控面**的独立备胎（交易所官方/新浪/同花顺），东财被封时它们不受牵连。
 
 ---
@@ -7321,10 +7734,14 @@ bj_quote = bse_quote_backup("2026-09-04", code="920021")
 | K线(分钟) | 腾讯 §1.2（m1~m60，≤320根） | 同花顺 | 同上一行，只有 30 / 60 分钟；1 / 5 / 15 分钟在 mootdx 恢复前暂无独立备胎 |
 | 逐笔成交 | 腾讯 §1.4（只有当日；mootdx 逐笔 #52 失效） | 暂无 | 新浪 `CN_Bill.GetBillList` 只返回大单，不是全部成交，不能当备胎 |
 | 研报列表 | 东财 reportapi | 新浪 §2.4 | `sina_research_reports()`：只有标题/类型/机构/研究员/日期，无评级与目标价 |
+| 实时行情+五档 | injoyai/tdx→mootdx/腾讯 | 交易所官方 | 沪 `yunhq.sse.com.cn:32041/v1/sh1/snap/{code}`、深 `szse.cn/api/market/ssjjhq/getTimeData?marketId=1&code={code}`；北 `bse_quote_backup(date, code)` 是当前快照，盘中延迟未标定 |
+| 融资融券 | 东财 datacenter | 上交所/深交所官方 | `margin_trading_backup(date, "SH"/"SZ", code=None)`，按交易所分别取；上交所融券余额金额可能为空 |
+| K线(全历史) | injoyai/tdx→mootdx/百度/腾讯 | 同花顺 | `d.10jqka.com.cn/v6/line/hs_{code}/01/last.js`（01日/11周/21月/30/60分；2001至今；JSONP剥壳） |
+| K线(分钟) | injoyai/tdx→mootdx | 腾讯 | `ifzq.gtimg.cn/appstock/app/kline/mkline?param={pre}{code},m5,,320`（m1/m5/m15/m30/m60，≤320根，需头 `Referer: https://gu.qq.com/`）|
 | 龙虎榜 | 东财 datacenter | 沪深交易所官方 | `dragon_tiger_backup()`（见下，含营业部席位） |
 | 个股资金流 | 东财 push2 | 新浪 | `fund_flow_backup()`（见下，日度四档单净额） |
 | 公告 | 巨潮 | 深交所官方/东财 | `announcements_backup()`（见下，深市深交所+PDF，沪市东财+PDF） |
-| 财务三表 | 新浪/mootdx | 同花顺 F10 | `basic.10jqka.com.cn/api/stock/finance/{code}_debt.json`（`_benefit`利润/`_cash`现金流；仅 UA，5连发不封） |
+| 财务三表 | 新浪/injoyai/tdx→mootdx | 同花顺 F10 | `basic.10jqka.com.cn/api/stock/finance/{code}_debt.json`（`_benefit`利润/`_cash`现金流；仅 UA，5连发不封） |
 | 个股新闻 | 东财 search | 新浪7x24 | `zhibo.sina.com.cn/api/zhibo/feed?zhibo_id=152&page_size=20&dire=f`（`ext.stocks` 带个股关联可过滤） |
 | 快讯 | 东财7x24(§5.3) | 财联社(§5.2) | 两条已互备；再加金十 `jin10.com/flash_newest.js` |
 | 券商评级+目标价 | 同花顺一致预期 | 巨潮 webapi | `p_sysapi1089?tdate=YYYY-MM-DD`，需头 `Accept-Enckey`=base64(AES-128-CBC(unix秒, key=iv=`1234567887654321`)) |
@@ -7441,6 +7858,10 @@ A: 有，见 Layer 13。§13.1 / §13.2 取上期所、上期能源、郑商所�
 
 ### Q: 沪市公司的互动易问答为什么是空的？
 A: 巨潮互动易只覆盖深市公司，沪市公司实测返回 0 条。沪市请用 §10.3 `sse_e_interaction()`（上证e互动）。部分公司近一个月确实没有回复，返回空表属正常。
+A: 可以作为自动降级，但不再是第一选择。先启动 injoyai/tdx REST；`tdx_client()` 会优先验活它，失败才调用带服务器探测的 `_mootdx_client()`。两者访问同一通达信协议，换客户端不能解决海外网络无法连接 7709 的问题。
+
+### Q: TDX 和腾讯有什么区别？
+A: 互补关系。injoyai/tdx（mootdx 为降级）负责交易层：价格、盘口、K线、逐笔、财务和 F10；腾讯补 PE/PB/市值/换手率/涨跌停价。
 
 ### Q: V3.0 为什么移除 akshare？
 A: akshare 本质是对东财/同花顺/新浪等公开 API 的封装，中间层增加了故障点（版本兼容 bug、pandas 3.0 ArrowInvalid 等）。V3.0 直连底层 HTTP API，零中间依赖，更稳定可控。
@@ -7465,6 +7886,7 @@ A: `size` 参数默认 10，调到 50。隐藏参数，文档未写明但实测�
 
 ### Q: 哪些数据源需要 API Key？
 A: 只有 iwencai 需要。其余 33 个来源（腾讯 / 东财 / 同花顺 / 新浪 / 巨潮 / 财联社 / 交易所与期货交易所 / 中债 / 货币网等）全部免费无 key。
+A: 只有 iwencai 需要。injoyai/tdx / mootdx / 腾讯 / 东财 / 同花顺 / 百度股市通 / 新浪 / 巨潮 / 财联社全部免费无 key。
 
 ### Q: 同花顺热点接口需要 cookie 吗？
 A: **不需要**。仅 User-Agent 即可，零鉴权 73ms 拿到 ~125 只当日强势股。但**不要去打 search.10jqka.com.cn 的 iwencai NL 选股接口** —— 那个有 hexin-v cookie JS 签名鉴权，跟热点接口完全两码事。
@@ -7478,8 +7900,8 @@ A: 本地自缓存模式。eastmoney 全系北向数据自 2024-08 起断供（�
 ### Q: 行业板块为什么从同花顺换成东财？
 A: 同花顺 `stock_board_industry_summary_ths` 接口 2026 年初加了反爬 401（需要登录态）。东财 push2 行业板块数据（`m:90+t:2`）是完美替代，零鉴权且字段更丰富。
 
-### Q: 在海外服务器跑，mootdx 接口超时？
-A: mootdx 走 TCP 直连通达信行情服务器，需国内 IP 才稳定。海外环境建议走代理。腾讯财经和百度股市通不受影响。
+### Q: 在海外服务器跑，TDX 接口超时？
+A: injoyai/tdx 和 mootdx 最终都走 TCP 7709，需国内 IP 才稳定。可把 TDX REST 部署在国内网络并仅通过受控内网访问；腾讯财经和百度股市通不受影响。
 
 ### Q: 不用 Claude Code，能用吗？
 A: 能。SKILL.md 本质是 Markdown + 内嵌 Python 代码。Codex、OpenClaw 或任何 AI 编程助手都能读取。你也可以直接把 Python 代码段复制出来在自己的脚本里跑。
