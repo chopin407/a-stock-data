@@ -1,6 +1,6 @@
 ---
 name: a-stock-data
-description: 当任务需要写代码实际获取A股及相关市场数据时使用——行情/K线/逐笔(腾讯日周月前后复权+分钟线+当日逐笔、通达信官网全市场盘后包、百度)、研报(东财+新浪+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业/板块资金流)、资金面(融资融券/大宗/股东户数/分红/资金流/ETF份额)、新闻(财联社/东财/华尔街见闻/新闻联播)、财务三表/F10/估值历史/ST名单、公告(巨潮)、打板(涨停池/连板/炸板率/监控池/异动)、ETF期权、舆情互动(互动易/上证e互动/热榜)、筹码分布、复权因子、申万行业变迁、宏观与利率(社融/PMI/中债收益率曲线/回购定盘利率/LPR/全球宏观日历)、指数成分/权重/估值/交易日历、期货与大宗商品(五家期货交易所日行情/商品与股指期权/持仓排名/期货日K含大商所/实时期货/A50/上海金)、事件驱动(业绩预告/机构调研/增减持/回购/股权质押/新股申购)、可转债等真实数据。十五层·87端点(含5备胎)·34个来源·内嵌全部可运行代码，自包含零外部文件；优先用腾讯/交易所官方等不封IP源，东财接口已内置限流防封，主源被封可查「备用源速查」降级。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
+description: 当任务需要写代码实际获取A股及相关市场数据时使用——行情/K线/逐笔(腾讯日周月前后复权+分钟线+当日逐笔、通达信官网全市场盘后包、百度)、研报(东财+新浪+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业/板块资金流)、资金面(融资融券/大宗/股东户数/分红/资金流/ETF份额)、新闻(财联社/东财/华尔街见闻/新闻联播)、财务三表/F10/估值历史/ST名单、公告(巨潮)、打板(涨停板行情六池/连板/炸板率/监控池/异动)、ETF期权、舆情互动(互动易/上证e互动/热榜)、筹码分布、复权因子、申万行业变迁、宏观与利率(社融/PMI/中债收益率曲线/回购定盘利率/LPR/全球宏观日历)、指数成分/权重/估值/交易日历、期货与大宗商品(五家期货交易所日行情/商品与股指期权/持仓排名/期货日K含大商所/实时期货/A50/上海金)、事件驱动(业绩预告/机构调研/增减持/回购/股权质押/新股申购)、可转债等真实数据。十五层·91端点(含5备胎)·34个来源·内嵌全部可运行代码，自包含零外部文件；优先用腾讯/交易所官方等不封IP源，东财接口已内置限流防封，主源被封可查「备用源速查」降级。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
 origin: custom
 version: 3.10.0
 description: 当任务需要写代码实际获取A股数据时使用——拉取行情/K线(TDX Go+mootdx+腾讯+百度)、研报(东财+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业)、资金面(融资融券/大宗/股东户数/分红/资金流)、新闻、财务三表/F10、公告(巨潮)、打板(涨停池/连板/炸板率/重点监控池/日内异动)、ETF期权(T型报价/希腊字母/IV)、舆情互动(互动易/热榜/人气榜)、筹码分布(获利比例/成本区间)、复权因子、估值历史(PE/PB/PS+换手率+ST)、申万行业变迁史、宏观(社融/PMI)等真实数据。十二层数据源·60端点(含5备胎)·指数成分/权重/估值/交易日历/官方两融/北交所行情·内嵌全部可运行代码；行情优先用 injoyai/tdx REST，未启动时自动降级 mootdx，再由腾讯补估值字段；东财接口已内置限流防封。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
@@ -14,7 +14,7 @@ version: 3.8.2
 
 # A股全栈数据工具包 V3.10.0
 
-十五层数据架构，87 个能力端点（82 主端点 + 5 备胎）、34 个来源。V3.10 新增的 2 个入口于 2026-09-22 实测，V3.9 新增的 25 个入口于 2026-09-20 实测；旧端点的验证日期见各章节。覆盖主板/创业板/科创板/ST，北交所覆盖依端点而异；已有备胎的数据可按「备用源速查」降级。
+十五层数据架构，91 个能力端点（86 主端点 + 5 备胎）、34 个来源。V3.10 新增的 2 个入口于 2026-09-22 实测，V3.9 新增的 25 个入口于 2026-09-20 实测；旧端点的验证日期见各章节。覆盖主板/创业板/科创板/ST，北交所覆盖依端点而异；已有备胎的数据可按「备用源速查」降级。
 
 > **V3.10.0（逐笔替代 / 期货日 K / 行情层重排，2026-09-22）：** 85→87 个能力入口（82 主 + 5 备胎），来源数不变（34）。
 > - **§1.4 腾讯逐笔 `tencent_ticks()`**：替代 #52 后返回空的 mootdx `transaction()`。最近一个交易日的全部分笔（沪深个股 + ETF），
@@ -269,11 +269,13 @@ ETF期权层 (V3.3 新增)
 | 3.2 | `hsgt_realtime()` | 北向分钟流向（hgt 可用 / sgt 仅参考） | 同花顺 |
 | 3.3 | `eastmoney_concept_blocks(code)` | 个股所属板块/概念归属 | 东财 |
 | 3.4 | `eastmoney_fund_flow_minute(code)` | 个股资金流（分钟级） | 东财 |
+| 3.4a | `stock_fund_flow_rank(period, direction, top_n)` | 全市场个股主力资金流排行（今日/3日，流入/流出） | 东财 |
 | 3.5 | `dragon_tiger_board(code, date)` | 个股龙虎榜+买卖席位 TOP5 | 东财 |
 | 3.6 | `lockup_expiry(code, date)` | 解禁历史+未来90天待解禁 | 东财 |
 | 3.7 | `industry_comparison()` | 行业板块涨跌排名 | 东财 |
 | 3.8 | `board_fund_flow(board_type, period)` | 板块资金流向（行业/概念/地域 × 今日/5日/10日，主力+四档） | 东财 |
-| 3.9 | `daily_dragon_tiger(date)` | 全市场龙虎榜+净买额排名 | 东财 |
+| 3.8a | `industry_fund_flow_rank(period, direction, top_n)` | 东财资金流页面行业排行（今日/5日，流入/流出） | 东财 |
+| 3.9 | `daily_dragon_tiger(date)` / `dragon_tiger_detail_range(start, end)` | 单日汇总 / 龙虎榜详情自定义区间（完整分页） | 东财 |
 | 4.1 | `margin_trading(code)` | 融资融券明细 | 东财 |
 | 4.2 | `block_trade(code)` | 大宗交易+营业部 | 东财 |
 | 4.3 | `holder_num_change(code)` | 股东户数变化 | 东财 |
@@ -296,7 +298,7 @@ ETF期权层 (V3.3 新增)
 | 6.8 | `st_stock_list()` | 沪深京 ST / *ST 当日名单 | 东财（baostock 兜底） |
 | 7.1 | `cninfo_announcements(code)` | 公告检索+PDF 下载 | 巨潮 |
 | 7.2 | `tdx_client(check='finance').F10(symbol, name='最新提示')` | 最新公告摘要 | 通达信 |
-| 8.1 | `em_zt_pool` / `em_zb_pool` / `em_dt_pool` / `em_yzt_pool` | 涨停/炸板/跌停/昨涨停四池 | 东财 |
+| 8.1 | `em_zt_pool` / `em_yzt_pool` / `em_qs_pool` / `em_cx_pool` / `em_zb_pool` / `em_dt_pool` | 涨停板行情六池 | 东财 |
 | 8.2 | `ths_limit_up_pool(date)` | 涨停原因题材+封板成功率+板型 | 同花顺 |
 | 8.3 | `limit_up_sentiment(date)` | 炸板率/连板高度/连板梯队 | 东财(四池组合) |
 | 8.4 | `em_stock_monitor()` | 重点监控池（风险警示名单+生效时间窗） | 东财 |
@@ -2923,6 +2925,90 @@ if realtime:
 
 > **注意：** push2 资金流金额单位是**元**（非万元），使用时注意换算。`klt=1` 分钟级，`klt=101` 日级。
 
+### 3.4a 东财全市场个股资金流排行（今日/3日）
+
+东财「个股资金流」页面的全市场排行。`direction="in"` 查主力净流入前列，`"out"` 查净流出前列。金额单位为元，比例和涨跌幅单位为百分数；排名是接口当前快照，不能用 `period` 回查指定历史日期。请求不需要页面抓包中的账户 Cookie/JSONP 回调。
+
+```python
+# 此 helper 同时供 §3.8a 的行业资金流排行复用；先执行上方 em_get 共用 helper。
+_EM_FLOW_FIELDS = {
+    "today": ("f62", "f184", "f3", "f66,f69,f72,f75,f78,f81,f84,f87"),
+    "3d": ("f267", "f268", "f257", "f269,f270,f271,f272,f273,f274,f275,f276"),
+    "5d": ("f164", "f165", "f109", "f166,f167,f168,f169,f170,f171,f172,f173"),
+}
+_EM_STOCK_FLOW_FS = ("m:0+t:6+f:!2,m:0+t:13+f:!2,m:0+t:80+f:!2,"
+                     "m:1+t:2+f:!2,m:1+t:23+f:!2,m:0+t:7+f:!2,m:1+t:3+f:!2")
+
+
+def _em_flow_rank(period: str, direction: str, top_n: int, fs: str) -> dict:
+    if period not in _EM_FLOW_FIELDS:
+        raise ValueError("period 须为 today/3d/5d")
+    if direction not in ("in", "out"):
+        raise ValueError("direction 须为 in/out")
+    if top_n < 1:
+        raise ValueError("top_n 须为正整数")
+    main, pct, change, detail = _EM_FLOW_FIELDS[period]
+    detail_fields = detail.split(",")
+    fields = ["f12", "f14", "f2", change, main, pct, *detail_fields]
+    if fs == _EM_STOCK_FLOW_FS:
+        fields.append("f127")  # 个股所属行业
+    params = {
+        "fid": main, "po": "1" if direction == "in" else "0",
+        "pz": "100", "np": "1", "fltt": "2", "invt": "2",
+        "ut": "8dec03ba335b81bf4ebdf7b29ec27d15", "fs": fs,
+        "fields": ",".join(dict.fromkeys(fields)),
+    }
+    url = "https://push2.eastmoney.com/api/qt/clist/get"
+    rows, total = [], 0
+    page = 1
+    while len(rows) < top_n:
+        r = em_get(url, params={**params, "pn": str(page)},
+                   headers={"User-Agent": UA, "Referer": "https://data.eastmoney.com/"},
+                   timeout=15)
+        data = r.json().get("data") or {}
+        items = data.get("diff") or []
+        total = int(data.get("total") or total or 0)
+        for item in items:
+            row = {
+                "rank": len(rows) + 1, "code": item.get("f12"),
+                "name": item.get("f14"), "price": item.get("f2"),
+                "change_pct": item.get(change),
+                "main_net": item.get(main), "main_pct": item.get(pct),
+                "super_large_net": item.get(detail_fields[0]),
+                "super_large_pct": item.get(detail_fields[1]),
+                "large_net": item.get(detail_fields[2]),
+                "large_pct": item.get(detail_fields[3]),
+                "medium_net": item.get(detail_fields[4]),
+                "medium_pct": item.get(detail_fields[5]),
+                "small_net": item.get(detail_fields[6]),
+                "small_pct": item.get(detail_fields[7]),
+            }
+            if fs == _EM_STOCK_FLOW_FS:
+                row["industry"] = item.get("f127")
+            rows.append(row)
+            if len(rows) >= top_n:
+                break
+        if not items or (total and len(rows) >= total) or (not total and len(items) < 100):
+            break
+        page += 1
+    return {"period": period, "direction": direction, "total": total,
+            "rows": rows}
+
+
+def stock_fund_flow_rank(period: str = "today", direction: str = "in",
+                         top_n: int = 50) -> dict:
+    """全市场 A 股个股主力资金流排行；period 支持 today/3d。"""
+    if period not in ("today", "3d"):
+        raise ValueError("个股排行 period 须为 today/3d")
+    return _em_flow_rank(period, direction, top_n, _EM_STOCK_FLOW_FS)
+
+
+# 今日流入/流出 TOP20；3日流入 TOP20
+inflow = stock_fund_flow_rank("today", "in", 20)
+outflow = stock_fund_flow_rank("today", "out", 20)
+three_day = stock_fund_flow_rank("3d", "in", 20)
+```
+
 ### 3.5 龙虎榜席位 — 个股上榜记录 + 买卖席位 TOP5 + 机构动向
 
 直连东财 datacenter API，不依赖第三方封装。
@@ -3250,12 +3336,72 @@ concept_5d = board_fund_flow("concept", "5d", 10)
 region_10d = board_fund_flow("region", "10d", 10)
 ```
 
+### 3.8a 东财资金流页面行业排行（今日/5日）
+
+对应 `data.eastmoney.com/bkzj/hy.html` 页面抓包的 `fs=m:90+s:4`。与 §3.8 的 `m:90+t:2` 属于不同板块筛选口径，结果不要直接拼接或视为同一行业全集。此处使用页面实际排行的 push2 接口；抓包中的 `dataapi/bkzj/getbkzj` 是另一种响应，未混用字段映射。
+
+```python
+# 先执行 §3.4a 的 _em_flow_rank 及共用 em_get helper。
+def industry_fund_flow_rank(period: str = "today", direction: str = "in",
+                            top_n: int = 50) -> dict:
+    """东财行业资金流页面排行；period 支持 today/5d。"""
+    if period not in ("today", "5d"):
+        raise ValueError("行业排行 period 须为 today/5d")
+    return _em_flow_rank(period, direction, top_n, "m:90+s:4")
+
+
+industry_in = industry_fund_flow_rank("today", "in", 20)
+industry_out = industry_fund_flow_rank("today", "out", 20)
+industry_5d = industry_fund_flow_rank("5d", "in", 20)
+```
+
 ### 3.9 全市场龙虎榜
 
 每日全市场龙虎榜汇总——当日所有触发龙虎榜的股票 + 上榜原因 + 买卖净额 + 换手率。
 
+**页面接口（2026-09-30 抓包）**：[龙虎榜详情](https://data.eastmoney.com/stock/tradedetail/2026-09-29.html) 的列表请求为
+`GET https://datacenter-web.eastmoney.com/api/data/v1/get`，`reportName=RPT_DAILYBILLBOARD_DETAILSNEW`，
+`source=WEB&client=WEB`。单日用 `(TRADE_DATE<='2026-09-29')(TRADE_DATE>='2026-09-29')`；
+自定义区间只需把上下界分别改成结束日和开始日。页面链接的日期不等于实际请求日期：抓包的 Referer 是
+`2026-09-29.html`，请求过滤日期却是 2026-09-30。以 `filter` 为准。`pageNumber` 从 1 开始，
+`pageSize` 为每页条数；`sortColumns=SECURITY_CODE,TRADE_DATE` 时必须配 `sortTypes=1,-1`。
+`callback=jQuery...` 是网页 JSONP 包装；Python 代码按 JSON 请求，不携带抓包中的 Cookie、Referer 与浏览器头（免 Cookie 请求待联网实测）。
+
+响应以 `result.data` 为明细、`result.pages/count` 为分页信息。页面的净买额、买入额、卖出额、
+龙虎榜成交额、市场成交额分别对应 `BILLBOARD_NET_AMT`、`BILLBOARD_BUY_AMT`、
+`BILLBOARD_SELL_AMT`、`BILLBOARD_DEAL_AMT`、`ACCUM_AMOUNT`（源单位元，展示万需除以 10000）；
+`DEAL_NET_RATIO`、`DEAL_AMOUNT_RATIO`、`TURNOVERRATE`、`CHANGE_RATE` 为百分比数值；
+`FREE_MARKET_CAP` 为流通市值（元），`EXPLANATION` 为上榜原因，`EXPLAIN` 为页面“解读”字段。
+`D1/D2/D5/D10_CLOSE_ADJCHRATE` 为上榜后对应交易日涨跌幅，近期记录可能为空。
+同一股票同日可能因不同原因出现多条，使用 `(SECURITY_CODE, TRADE_DATE, EXPLANATION)` 识别明细，
+不要只按代码去重。此接口是**上榜股票汇总**；买卖营业部席位见 §3.5 的两个 `RPT_BILLBOARD_DAILYDETAILS*` 报表。
+
 ```python
 from datetime import datetime
+
+
+def dragon_tiger_detail_range(start_date: str, end_date: str) -> list[dict]:
+    """龙虎榜详情页同口径的日期区间明细；日期 YYYY-MM-DD，金额保留源单位元。"""
+    start = datetime.strptime(start_date, "%Y-%m-%d").date()
+    end = datetime.strptime(end_date, "%Y-%m-%d").date()
+    if start > end:
+        raise ValueError("start_date 不能晚于 end_date")
+    fields = (
+        "SECURITY_CODE,SECUCODE,SECURITY_NAME_ABBR,TRADE_DATE,EXPLAIN,"
+        "CLOSE_PRICE,CHANGE_RATE,BILLBOARD_NET_AMT,BILLBOARD_BUY_AMT,"
+        "BILLBOARD_SELL_AMT,BILLBOARD_DEAL_AMT,ACCUM_AMOUNT,DEAL_NET_RATIO,"
+        "DEAL_AMOUNT_RATIO,TURNOVERRATE,FREE_MARKET_CAP,EXPLANATION,"
+        "D1_CLOSE_ADJCHRATE,D2_CLOSE_ADJCHRATE,D5_CLOSE_ADJCHRATE,"
+        "D10_CLOSE_ADJCHRATE,SECURITY_TYPE_CODE"
+    )
+    rows = _em_datacenter_strict(
+        "RPT_DAILYBILLBOARD_DETAILSNEW",
+        filter_str=f"(TRADE_DATE<='{end}')(TRADE_DATE>='{start}')",
+        sort_columns="SECURITY_CODE,TRADE_DATE", sort_types="1,-1",
+        page_size=500, max_rows=float("inf"), columns=fields,
+    )
+    return rows
+
 
 def daily_dragon_tiger(trade_date: str = None, min_net_buy: float = None) -> dict:
     """
@@ -3268,12 +3414,8 @@ def daily_dragon_tiger(trade_date: str = None, min_net_buy: float = None) -> dic
     if trade_date is None:
         trade_date = datetime.now().strftime("%Y-%m-%d")
 
-    data = eastmoney_datacenter(
-        "RPT_DAILYBILLBOARD_DETAILSNEW",
-        filter_str=f"(TRADE_DATE>='{trade_date}')(TRADE_DATE<='{trade_date}')",
-        page_size=500,
-        sort_columns="BILLBOARD_NET_AMT", sort_types="-1",
-    )
+    data = dragon_tiger_detail_range(trade_date, trade_date)
+    data.sort(key=lambda row: float(row.get("BILLBOARD_NET_AMT") or 0), reverse=True)
     if not data:
         return {"date": trade_date, "total_records": 0, "stocks": [],
                 "note": "无数据（非交易日或盘后未更新）"}
@@ -3298,6 +3440,9 @@ def daily_dragon_tiger(trade_date: str = None, min_net_buy: float = None) -> dic
     return {"date": actual_date, "total_records": len(stocks), "stocks": stocks}
 
 # 用法
+details = dragon_tiger_detail_range("2026-09-28", "2026-09-30")
+print(f"区间龙虎榜明细 {len(details)} 条")
+
 data = daily_dragon_tiger("2026-05-16")
 print(f"{data['date']} 龙虎榜共 {data['total_records']} 条记录")
 for s in data["stocks"][:10]:
@@ -4654,9 +4799,9 @@ text = client.F10(symbol='688017', name='最新提示')
 
 ## Layer 8: 打板层（涨停 / 炸板 / 跌停 / 题材情绪，V3.3.0 新增）
 
-> 连板梯队、炸板率、晋级率、涨停原因题材——打板与题材跟踪的高频需求（#23 / #15）。东财四池走 `push2ex.eastmoney.com`（与现有 push2 同源，已纳入 `em_get()` 限流）；涨停原因题材增强用同花顺。**全部免登录、零鉴权。**
+> 连板梯队、炸板率、晋级率、涨停原因题材——打板与题材跟踪的高频需求（#23 / #15）。东财六池走 `push2ex.eastmoney.com`（与现有 push2 同源，已纳入 `em_get()` 限流）；涨停原因题材增强用同花顺。**全部免登录、零鉴权。**
 
-### 8.1 东财涨停板池 — 涨停 / 炸板 / 跌停 / 昨日涨停
+### 8.1 东财涨停板池 — 涨停 / 昨日涨停 / 强势 / 次新 / 炸板 / 跌停
 
 ```python
 import requests
@@ -4670,7 +4815,8 @@ def _fmt_zt_time(t) -> str:
 
 def _em_zt_api(endpoint: str, sort: str, date: str) -> list[dict]:
     """东财涨停板行情中心通用请求（push2ex，走 em_get 限流）。
-    endpoint: getTopicZTPool / getTopicZBPool / getTopicDTPool / getYesterdayZTPool
+    endpoint: getTopicZTPool / getYesterdayZTPool / getTopicQSPool /
+              getTopicCXPooll / getTopicZBPool / getTopicDTPool
     返回 data.pool 原始列表（data 为 null = 非交易日 / 参数错）。"""
     url = f"https://push2ex.eastmoney.com/{endpoint}"
     params = {"ut": ZTB_UT, "dpt": "wz.ztzt", "Pageindex": 0,
@@ -4736,6 +4882,41 @@ def em_yzt_pool(date: str) -> list[dict]:
             "industry": p.get("hybk", ""), "zt_stat": f'{(p.get("zttj") or {}).get("days","?")}天{(p.get("zttj") or {}).get("ct","?")}板'})
     return out
 
+def em_qs_pool(date: str) -> list[dict]:
+    """强势股池（60日新高或近期多次涨停）。返回 code/name/price/limit_price/
+    pct/amount/float_cap/total_cap/turnover/speed/new_high/volume_ratio/
+    reason_code/reason/industry/zt_stat。金额单位元，涨幅/换手率/涨速单位%。"""
+    reasons = {1: "60日新高", 2: "近期多次涨停", 3: "60日新高且近期多次涨停"}
+    out = []
+    for p in _em_zt_api("getTopicQSPool", "zdp:desc", date):
+        reason_code = p.get("cc")
+        out.append({"code": p["c"], "name": p["n"], "price": p["p"] / 1000,
+            "limit_price": p["ztp"] / 1000, "pct": round(p["zdp"], 2),
+            "amount": p.get("amount"), "float_cap": p.get("ltsz"),
+            "total_cap": p.get("tshare"), "turnover": round(p["hs"], 2),
+            "speed": p.get("zs"), "new_high": p.get("nh") == 1,
+            "volume_ratio": p.get("lb"), "reason_code": reason_code,
+            "reason": reasons.get(reason_code, "未知"), "industry": p.get("hybk", ""),
+            "zt_stat": f'{(p.get("zttj") or {}).get("days","?")}天{(p.get("zttj") or {}).get("ct","?")}板'})
+    return out
+
+def em_cx_pool(date: str) -> list[dict]:
+    """次新股池（上市一年内且一字板已中断）。返回 code/name/price/limit_price/
+    pct/amount/float_cap/total_cap/turnover/open_days/open_date/list_date/
+    new_high/industry/zt_stat。日期为 YYYYMMDD，金额单位元。"""
+    out = []
+    for p in _em_zt_api("getTopicCXPooll", "ods:asc", date):
+        out.append({"code": p["c"], "name": p["n"], "price": p["p"] / 1000,
+            "limit_price": p["ztp"] / 1000 if p.get("ztp") is not None and p["ztp"] <= 100000000 else None,
+            "pct": round(p["zdp"], 2), "amount": p.get("amount"),
+            "float_cap": p.get("ltsz"), "total_cap": p.get("tshare"),
+            "turnover": round(p["hs"], 2), "open_days": p.get("ods"),
+            "open_date": str(p["od"]) if p.get("od") else None,
+            "list_date": str(p["ipod"]) if p.get("ipod") else None,
+            "new_high": p.get("nh") == 1, "industry": p.get("hybk", ""),
+            "zt_stat": f'{(p.get("zttj") or {}).get("days","?")}天{(p.get("zttj") or {}).get("ct","?")}板'})
+    return out
+
 # 用法
 zt = em_zt_pool("20260626")
 print(f"今日涨停 {len(zt)} 只")
@@ -4743,7 +4924,7 @@ for s in zt[:3]:
     print(f"  {s['name']} {s['zt_stat']} 封板{s['seal_fund']/1e8:.2f}亿 {s['industry']}")
 ```
 
-> **坑：** ① 价格字段 `price`/`limit_price` 已 ÷1000（原始值是 ×1000 整数）。② 四池只有 `sort` 不同（涨停/炸板=`fbt:asc`、跌停=`fund:asc`、昨涨停=`zs:desc`），`dpt` 都是 `wz.ztzt`。③ `date` 必须传交易日，非交易日 `data` 返回 null。④ 金额单位均为**元**。
+> **坑：** ① 价格字段 `price`/`limit_price` 已 ÷1000（原始值是 ×1000 整数）。② 六池分别用 `fbt:asc`（涨停/炸板）、`zs:desc`（昨涨停）、`zdp:desc`（强势）、`ods:asc`（次新）、`fund:asc`（跌停）；`dpt` 均为 `wz.ztzt`。③ `date` 必须传交易日，非交易日 `data` 返回 null。④ 金额单位均为**元**。⑤ 专题统计不含 ST；次新接口路径确为 `getTopicCXPooll`（末尾两个 l）。
 
 ### 8.2 同花顺涨停揭秘 — 涨停原因题材 + 封板成功率 + 板型
 

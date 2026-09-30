@@ -3,7 +3,7 @@
 <h1 align="center">a-stock-data</h1>
 
 <p align="center">
-  <b>Full-stack data toolkit for China A-shares — 15 layers · 87 endpoints · 34 sources · zero-auth (except iwencai)</b>
+  <b>Full-stack data toolkit for China A-shares — 15 layers · 91 endpoints · 34 sources · zero-auth (except iwencai)</b>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
   <a href="https://github.com/simonlin1212/a-stock-data/stargazers"><img src="https://img.shields.io/github/stars/simonlin1212/a-stock-data?style=social" alt="Stars"></a>
   <br>
   <img src="https://img.shields.io/badge/layers-15-2ea44f.svg" alt="Layers">
-  <img src="https://img.shields.io/badge/endpoints-87-2ea44f.svg" alt="Endpoints">
+  <img src="https://img.shields.io/badge/endpoints-91-2ea44f.svg" alt="Endpoints">
   <img src="https://img.shields.io/badge/sources-34-2ea44f.svg" alt="Sources">
   <img src="https://img.shields.io/badge/auth-zero-success.svg" alt="Zero Auth">
 </p>
@@ -26,11 +26,11 @@
   <a href="#data-coverage-15-categories">Coverage</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#quick-start">Quick Start</a> ·
-  <a href="#87-endpoints">Endpoints</a> ·
+  <a href="#91-endpoints">Endpoints</a> ·
   <a href="./CHANGELOG.md">Changelog</a>
 </p>
 
-Full-stack data toolkit for China A-Share market — 15-layer architecture · 87 capability endpoints (82 primary + 5 backups) · 34 data sources · direct HTTP calls except two TCP client libraries (mootdx / baostock)
+Full-stack data toolkit for China A-Share market — 15-layer architecture · 91 capability endpoints (86 primary + 5 backups) · 34 data sources · direct HTTP calls except two TCP client libraries (mootdx / baostock)
 
 A self-contained Skill file that consolidates raw A-share and related market data from 34 sources into a ready-to-use toolkit for AI coding assistants. No need to memorize Tencent K-line paging parameters, the binary layout of TDX end-of-day packages, Eastmoney PDF Referer headers, or iwencai X-Claw authentication — it's all handled. And when a primary source bans you, there's a backup-source quick reference to fall back on.
 Full-stack data toolkit for China A-Share market — 12-layer architecture · 60 capability endpoints (55 primary + 5 backups) · 22 data sources · TDX-first with automatic fallback
@@ -58,7 +58,7 @@ A self-contained Skill file that consolidates raw A-share data from 22 sources i
 | 5 | News | Stock news, CLS flash, 7×24 live news, CCTV evening news transcripts | Eastmoney, CLS, Wallstreetcn, CCTV |
 | 6 | Fundamentals | Quarterly snapshot, F10, financial statements, valuation history, listing/delisting dates, SW industry history, ST list | TDX (mootdx), Sina, baostock, SW, Eastmoney |
 | 7 | Filings | Full filings across SSE / SZSE / BSE | cninfo |
-| 8 | Limit-up | Limit-up / break / limit-down / previous-day pools, limit-up reasons, watch list, intraday anomalies | Eastmoney, THS |
+| 8 | Limit-up | Six limit-up topic pools, limit-up reasons, watch list, intraday anomalies | Eastmoney, THS |
 | 9 | ETF options | T-quotes, Greeks, implied volatility | Sina |
 | 10 | Sentiment | cninfo IRM (Shenzhen), SSE e-Interaction (Shanghai), THS hot list, Eastmoney popularity rank, concept hits | cninfo, SSE e-Interaction, THS, Eastmoney |
 | 11 | Macro & rates | Social financing, PMI, government and credit yield curves, repo fixing rates, LPR, global macro calendar | PBoC, NBS, ChinaBond, China Money (CFETS), Eastmoney, Wallstreetcn |
@@ -100,7 +100,7 @@ China A-Share Full-Stack Data · 12-Layer Architecture · V3.8.2
 ├── Fundamentals   injoyai/tdx + mootdx + Eastmoney + Sina  37-field quarterly + F10 + Financial statements
 │               + baostock + SW                  Valuation history (PE/PB/PS + turnover + ST) / listing & delisting / SW industry history  ★V3.7
 ├── Filings        cninfo + injoyai/tdx/mootdx        Full filings across SSE / SZSE / BSE
-├── Limit-Up       Eastmoney push2ex + THS            ZT/ZB/DT/prev-ZT pools / limit reasons / consecutive-board ladder
+├── Limit-Up       Eastmoney push2ex + THS            Six limit-up topic pools / limit reasons / consecutive-board ladder
 │                                                     + Watch list pool + Intraday price-anomaly pool  ★V3.6
 ├── Options        Sina hq.sinajs                     ETF option T-quotes / Greeks / implied volatility  ★V3.3
 ├── Sentiment      cninfo IRM + SSE e-Interaction + THS + Eastmoney   Shenzhen Q&A / Shanghai Q&A ★V3.9 / hot lists / popularity / concept hits
@@ -156,11 +156,11 @@ Launch Claude Code and say "Check the valuation of 688017" — the skill activat
 
 ---
 
-## 87 Endpoints
+## 91 Endpoints
 
-There are 82 primary entries and 5 backups. Counts refer to capability entries: CSI/CNI or SSE/SZSE routes within one function count once; helpers and research candidates are excluded.
+There are 86 primary entries and 5 backups. Counts refer to capability entries: CSI/CNI or SSE/SZSE routes within one function count once; helpers and research candidates are excluded.
 
-> **Counting convention:** the tables below have 88 rows but count as 87 capability endpoints — "Eastmoney Industry Reports" shares **the same endpoint** as "Eastmoney reportapi" (only the `qType` parameter differs) and "THS Northbound (historical)" is a local self-built cache (not a separate endpoint), so neither is counted; the single "EM Intraday Anomaly Pool" row covers **two** endpoints (`list` / `count`), adding one back. 88 − 1 − 1 + 1 = 87. The ticker helper `to_joinquant()` is not counted.
+> **Counting convention:** the tables below have 92 rows but count as 91 capability endpoints — "Eastmoney Industry Reports" shares **the same endpoint** as "Eastmoney reportapi" (only the `qType` parameter differs) and "THS Northbound (historical)" is a local self-built cache (not a separate endpoint), so neither is counted; the single "EM Intraday Anomaly Pool" row covers **two** endpoints (`list` / `count`), adding one back. 92 − 1 − 1 + 1 = 91. The ticker helper `to_joinquant()` is not counted.
 
 ### Market Data (real-time, no IP ban)
 
@@ -195,11 +195,13 @@ There are 82 primary entries and 5 backups. Counts refer to capability entries: 
 | THS Northbound (historical) | Local self-cached daily history |
 | Eastmoney Sector Membership | All sectors a stock belongs to (industry/concept/region mixed) + BK code + daily change + leading stock (V3.2.2, replaced Baidu PAE, one request) |
 | **Eastmoney Fund Flow** | Main / Large / Medium / Small / Super-large order minute-level net inflow (V3.1, replaced Baidu PAE) |
+| **Stock Fund Flow Ranking** | Market-wide today/3-day main-capital inflow and outflow rankings, with four order-size tiers |
 | Dragon Tiger Board | Appearance records + Top 5 buy/sell brokerages + institutional activity |
-| Daily Dragon Tiger (Full Market) | All stocks on daily board + net buy ranking + appearance reasons |
+| Daily Dragon Tiger (Full Market) | Daily net buy ranking; fully paginated board details for a custom date range, including amounts, ratios, reasons, and subsequent returns |
 | Lockup Expiry Calendar | Historical releases + 90-day upcoming expiry alerts |
 | **Industry Ranking** | Eastmoney industry change/up/down counts (V3.0, replaced THS 401) |
 | **Board Fund Flow** | Industry/concept/region × today/5d/10d main net inflow & ratio + super-large/large/medium/small tiers + leading stock (V3.5, same endpoint as Industry Ranking) |
+| **Industry Fund Flow Ranking** | Eastmoney fund-flow page industry universe, today/5-day inflow and outflow rankings with order-size tiers |
 
 ### Capital Flow / Ownership (V3.0 New)
 
@@ -245,6 +247,8 @@ There are 82 primary entries and 5 backups. Counts refer to capability entries: 
 | EM Break-Board Pool | Opened after limit-up + amplitude / speed |
 | EM Limit-Down Pool | Seal fund / consecutive limit-down / open count / board turnover |
 | EM Prev-Day Limit-Up Pool | Yesterday's limit-up performance today (promotion rate / profit effect) |
+| EM Strong-Stock Pool | 60-day highs or repeated limit-ups, selection reason, volume ratio |
+| EM Sub-New Pool | Recently listed stocks after one-price limit-up streak ends, opening date and listing date |
 | THS Limit-Up Insight | Limit reason themes / seal success rate / board type / seal amount |
 | EM Watch List Pool | Exchange risk-warning / watch list + validity window (new in V3.6) |
 | EM Intraday Anomaly Pool | Severe price-anomaly detail + per-stock aggregated counts + all 12 anomaly rules decoded (new in V3.6) |
@@ -348,6 +352,7 @@ Just tell your AI assistant:
 | Northbound Flow | "How's northbound capital flow looking today" |
 | Concept Blocks | "What concept sectors does 688017 belong to" |
 | Fund Flow | "Is institutional money flowing into or out of 000858 today" |
+| Fund Flow Rankings | "Which stocks lead today's or 3-day main-capital inflows and outflows, and which industries lead over 5 days" |
 | Dragon Tiger Board | "Has 002475 appeared on the dragon tiger board recently, which brokerages are buying" |
 | Daily Dragon Tiger | "Which stocks had the highest net buy on today's dragon tiger board" |
 | Lockup Expiry | "Any lockup expiries coming up in the next 3 months for this stock" |
