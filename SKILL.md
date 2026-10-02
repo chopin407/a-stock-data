@@ -1,6 +1,6 @@
 ---
 name: a-stock-data
-description: 当任务需要写代码实际获取A股及相关市场数据时使用——行情/K线/逐笔(腾讯日周月前后复权+分钟线+当日逐笔、通达信官网全市场盘后包、百度)、研报(东财+新浪+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业/板块资金流)、资金面(融资融券/大宗/股东户数/分红/资金流/ETF份额)、新闻(财联社/东财/华尔街见闻/新闻联播)、财务三表/F10/估值历史/ST名单、公告(巨潮)、打板(涨停板行情六池/连板/炸板率/监控池/异动)、ETF期权、舆情互动(互动易/上证e互动/热榜)、筹码分布、复权因子、申万行业变迁、宏观与利率(社融/PMI/中债收益率曲线/回购定盘利率/LPR/全球宏观日历)、指数成分/权重/估值/交易日历、期货与大宗商品(五家期货交易所日行情/商品与股指期权/持仓排名/期货日K含大商所/实时期货/A50/上海金)、事件驱动(业绩预告/机构调研/增减持/回购/股权质押/新股申购)、可转债等真实数据。十五层·91端点(含5备胎)·34个来源·内嵌全部可运行代码，自包含零外部文件；优先用腾讯/交易所官方等不封IP源，东财接口已内置限流防封，主源被封可查「备用源速查」降级。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
+description: 当任务需要写代码实际获取A股及相关市场数据时使用——行情/K线/逐笔(腾讯日周月前后复权+分钟线+当日逐笔、通达信官网全市场盘后包、百度)、研报(东财+新浪+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业/板块资金流)、资金面(融资融券/大宗/股东户数/分红/资金流/ETF份额)、新闻(财联社/东财/华尔街见闻/新闻联播)、财务三表/F10/估值历史/ST名单/自选股综合评价、公告(巨潮)、打板(涨停板行情六池/连板/炸板率/监控池/异动)、ETF期权、舆情互动(互动易/上证e互动/热榜)、筹码分布、复权因子、申万行业变迁、宏观与利率(社融/PMI/中债收益率曲线/回购定盘利率/LPR/全球宏观日历)、指数成分/权重/估值/交易日历、期货与大宗商品(五家期货交易所日行情/商品与股指期权/持仓排名/期货日K含大商所/实时期货/A50/上海金)、事件驱动(业绩预告/机构调研/增减持/回购/股权质押/新股申购)、可转债等真实数据。十五层·92端点(含5备胎)·34个来源·内嵌全部可运行代码，自包含零外部文件；优先用腾讯/交易所官方等不封IP源，东财接口已内置限流防封，主源被封可查「备用源速查」降级。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
 origin: custom
 version: 3.10.0
 description: 当任务需要写代码实际获取A股数据时使用——拉取行情/K线(TDX Go+mootdx+腾讯+百度)、研报(东财+同花顺+iwencai)、信号(热点/北向/龙虎榜/解禁/行业)、资金面(融资融券/大宗/股东户数/分红/资金流)、新闻、财务三表/F10、公告(巨潮)、打板(涨停池/连板/炸板率/重点监控池/日内异动)、ETF期权(T型报价/希腊字母/IV)、舆情互动(互动易/热榜/人气榜)、筹码分布(获利比例/成本区间)、复权因子、估值历史(PE/PB/PS+换手率+ST)、申万行业变迁史、宏观(社融/PMI)等真实数据。十二层数据源·60端点(含5备胎)·指数成分/权重/估值/交易日历/官方两融/北交所行情·内嵌全部可运行代码；行情优先用 injoyai/tdx REST，未启动时自动降级 mootdx，再由腾讯补估值字段；东财接口已内置限流防封。仅在需要调用数据接口取数时使用：A股概念解释、投资观点讨论、策略问答等无需取数的话题不要加载本skill。
@@ -14,7 +14,7 @@ version: 3.8.2
 
 # A股全栈数据工具包 V3.10.0
 
-十五层数据架构，91 个能力端点（86 主端点 + 5 备胎）、34 个来源。V3.10 新增的 2 个入口于 2026-09-22 实测，V3.9 新增的 25 个入口于 2026-09-20 实测；旧端点的验证日期见各章节。覆盖主板/创业板/科创板/ST，北交所覆盖依端点而异；已有备胎的数据可按「备用源速查」降级。
+十五层数据架构，92 个能力端点（87 主端点 + 5 备胎）、34 个来源。V3.10 新增的 2 个入口于 2026-09-22 实测，V3.9 新增的 25 个入口于 2026-09-20 实测；旧端点的验证日期见各章节。覆盖主板/创业板/科创板/ST，北交所覆盖依端点而异；已有备胎的数据可按「备用源速查」降级。
 
 > **V3.10.0（逐笔替代 / 期货日 K / 行情层重排，2026-09-22）：** 85→87 个能力入口（82 主 + 5 备胎），来源数不变（34）。
 > - **§1.4 腾讯逐笔 `tencent_ticks()`**：替代 #52 后返回空的 mootdx `transaction()`。最近一个交易日的全部分笔（沪深个股 + ETF），
@@ -296,6 +296,7 @@ ETF期权层 (V3.3 新增)
 | 6.6 | `baostock_stock_basic(code)` | 上市日 / **退市日** / 状态 | baostock |
 | 6.7 | `sw_industry_history()` / `sw_industry_as_of(df, code, d)` | 申万行业**变迁史**（消除前视偏差，仅代码无中文名） | 申万 |
 | 6.8 | `st_stock_list()` | 沪深京 ST / *ST 当日名单 | 东财（baostock 兜底） |
+| 6.9 | `eastmoney_zixuan_evaluation(code)` | 东财自选股单票综合评价原始结果（慢速请求 + 10 分钟缓存） | 东财 |
 | 7.1 | `cninfo_announcements(code)` | 公告检索+PDF 下载 | 巨潮 |
 | 7.2 | `tdx_client(check='finance').F10(symbol, name='最新提示')` | 最新公告摘要 | 通达信 |
 | 8.1 | `em_zt_pool` / `em_yzt_pool` / `em_qs_pool` / `em_cx_pool` / `em_zb_pool` / `em_dt_pool` | 涨停板行情六池 | 东财 |
@@ -1128,14 +1129,15 @@ DATACENTER_URL = "https://datacenter-web.eastmoney.com/api/data/v1/get"
 # Keep-Alive 会话，批量调用时自动降速，避免被封。详见「数据源优先级 & 东财防封」章节。
 EM_SESSION = requests.Session()
 EM_SESSION.headers.update({"User-Agent": UA})
-# 连接级自动重试：瞬态连接错误 / 429 / 5xx 指数退避重试（住宅IP偶发风控更稳）。
-# 注意：403 不重试（东财风控信号，重试无益反而加重；按下方 EM_MIN_INTERVAL 降频应对）。
+# 连接级自动重试：瞬态连接错误 / 5xx 指数退避重试（住宅IP偶发风控更稳）。
+# 403/429 都是风控信号，不自动重试；降低频率并等待后再运行。
 try:
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
     _em_adapter = HTTPAdapter(max_retries=Retry(
         total=3, connect=3, backoff_factor=0.6,
-        status_forcelist=[429, 500, 502, 503, 504], allowed_methods=["GET"]))
+        status_forcelist=[500, 502, 503, 504], allowed_methods=["GET"],
+        respect_retry_after_header=False))
     EM_SESSION.mount("https://", _em_adapter)
     EM_SESSION.mount("http://", _em_adapter)
 except Exception:
@@ -4696,6 +4698,101 @@ def _st_list_baostock(reason):
 ```python
 st = st_stock_list()
 print(st.attrs["coverage"], len(st), st.st_type.value_counts().to_dict())
+```
+
+### 6.9 东财自选股综合评价（限流接口）
+
+自选股页面 `https://quote.eastmoney.com/zixuan/` 抓包接口：
+`GET https://datacenter-web.eastmoney.com/web/api/data/v1/get`，
+`reportName=RPT_CUSTOM_SEVEN_JOINED_ZIXUAN_ZHENGU`，
+`filter=(SECUCODE="600657.SH")`，`source=QuoteWeb`，`client=ZixuanWEB`。
+`SECUCODE` 用六位证券代码加市场后缀。`callback=jQuery...` 与 `_` 是浏览器 JSONP / 防缓存参数；
+Python 不复制浏览器的账户 Cookie 或会话令牌。用户提供的 600699.SH 响应样本确认：`result.data`
+为单条记录，`result.count=1`、`result.pages=null`，因此不能用需要整型页数的 `_em_datacenter_strict()`。
+`TOTAL_SCORE` / `TOTAL_SCORE_CHANGE` 为综合分与变化，`BOARD_NAME` 为所属板块，
+`MARKET_FOCUS` / `MARKET_FOCUS_RANK` 为市场关注度及排名，`CAPITAL_FLOWS` /
+`CAPITAL_FLOWS_5DAYS` 为资金流字段，`PARTICIPATION_WISH` 为参与意愿，
+`SUPPORT_LEVEL` / `PRESSURE_LEVEL` 为支撑位/压力位，`WORDS_EXPLAIN` 为文字评价。
+`LIST` 是按财报期展开的财务指标及同行排名，含 `WEIGHT_ROE`、`NETPROFIT_YOY_RATIO`、
+`TOTAL_ASSETS_TR`、`SALE_CASH_RATIO`、`DEBT_ASSET_RATIO` 等；保留源字段与原单位，
+不擅自把分值、比例或金额重新换算。函数返回 `result.data[0]` 原始记录。
+仅确认用户提供的抓包响应；匿名可用性仍待联网实测。若服务端要求登录或返回限流错误，直接报错。
+
+**限流：** 此报表比普通数据中心查询更保守，进程内两次实际请求至少间隔 5 秒，并对同一证券缓存 10 分钟；
+底层仍经过统一 `em_get()` 串行限流。批量任务顺序调用，遇到 429/403 停止本轮，稍后再运行，
+不要并发、循环重试或把上面的 Cookie 写进脚本。共用 `em_get()` 对 403/429 不自动重试；
+多进程共享 IP 时还需在进程外统一节流。
+
+```python
+# 先执行「Ticker 格式归一化」与「东财数据中心统一查询」中的共用代码。
+import copy
+import json
+import time
+import requests
+
+_ZIXUAN_EVAL_URL = "https://datacenter-web.eastmoney.com/web/api/data/v1/get"
+_ZIXUAN_EVAL_CALLBACK = "astock_zixuan_eval"
+_zixuan_eval_last_call = [0.0]
+_zixuan_eval_cache = {}  # {SECUCODE: (monotonic_expiry, result)}；仅进程内缓存
+
+
+def eastmoney_zixuan_evaluation(code: str):
+    """东财自选股综合评价原始单条记录；无数据返回 None，接口错误抛 RuntimeError。"""
+    digits = norm_ticker(code, stock_only=True)
+    market = get_prefix(code).upper()
+    secucode = f"{digits}.{market}"
+    now = time.monotonic()
+    cached = _zixuan_eval_cache.get(secucode)
+    if cached is not None and now < cached[0]:
+        return copy.deepcopy(cached[1])
+
+    wait = 5.0 - (now - _zixuan_eval_last_call[0])
+    if wait > 0:
+        time.sleep(wait)
+    params = {"reportName": "RPT_CUSTOM_SEVEN_JOINED_ZIXUAN_ZHENGU",
+              "filter": f'(SECUCODE="{secucode}")',
+              "source": "QuoteWeb", "client": "ZixuanWEB",
+              "callback": _ZIXUAN_EVAL_CALLBACK}
+    try:
+        response = em_get(_ZIXUAN_EVAL_URL, params=params,
+                          headers={"Referer": "https://quote.eastmoney.com/zixuan/"},
+                          timeout=20)
+        response.raise_for_status()
+        body = response.text.strip()
+        wrapper = _ZIXUAN_EVAL_CALLBACK + "("
+        if body.startswith(wrapper) and body.endswith(");"):
+            body = body[len(wrapper):-2]
+        payload = json.loads(body)
+    except (requests.RequestException, ValueError) as exc:
+        raise RuntimeError(f"东财自选股综合评价请求失败（{secucode}）: {exc}") from exc
+    finally:
+        _zixuan_eval_last_call[0] = time.monotonic()
+
+    if not isinstance(payload, dict):
+        raise RuntimeError("东财自选股综合评价返回的不是 JSON 对象")
+    if payload.get("code") == 9201:  # 数据中心「返回数据为空」
+        result = None
+    elif (payload.get("code") != 0 or payload.get("success") is False
+          or not isinstance(payload.get("result"), dict)):
+        raise RuntimeError(f"东财自选股综合评价返回错误: "
+                           f"{payload.get('code')} {payload.get('message')}")
+    else:
+        rows = payload["result"].get("data")
+        if not isinstance(rows, list) or len(rows) > 1 or any(not isinstance(row, dict) for row in rows):
+            raise RuntimeError("东财自选股综合评价 data 结构异常")
+        count = payload["result"].get("count")
+        if count is not None and (isinstance(count, bool) or not isinstance(count, int)
+                                  or count != len(rows)):
+            raise RuntimeError(f"东财自选股综合评价 count={count!r} 与 data 条数不符")
+        result = rows[0] if rows else None
+        if result is not None and result.get("SECUCODE") != secucode:
+            raise RuntimeError(f"东财自选股综合评价返回了其他证券: {result.get('SECUCODE')!r}")
+    _zixuan_eval_cache[secucode] = (time.monotonic() + 600, copy.deepcopy(result))
+    return copy.deepcopy(result)
+
+
+# 仅按需查询单只股票；结果字段以实际响应为准。
+evaluation = eastmoney_zixuan_evaluation("600699.SH")
 ```
 
 ---

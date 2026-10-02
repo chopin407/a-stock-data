@@ -3,7 +3,7 @@
 <h1 align="center">a-stock-data</h1>
 
 <p align="center">
-  <b>Full-stack data toolkit for China A-shares — 15 layers · 91 endpoints · 34 sources · zero-auth (except iwencai)</b>
+  <b>Full-stack data toolkit for China A-shares — 15 layers · 92 endpoints · 34 sources · most endpoints need no authentication</b>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
   <a href="https://github.com/simonlin1212/a-stock-data/stargazers"><img src="https://img.shields.io/github/stars/simonlin1212/a-stock-data?style=social" alt="Stars"></a>
   <br>
   <img src="https://img.shields.io/badge/layers-15-2ea44f.svg" alt="Layers">
-  <img src="https://img.shields.io/badge/endpoints-91-2ea44f.svg" alt="Endpoints">
+  <img src="https://img.shields.io/badge/endpoints-92-2ea44f.svg" alt="Endpoints">
   <img src="https://img.shields.io/badge/sources-34-2ea44f.svg" alt="Sources">
   <img src="https://img.shields.io/badge/auth-zero-success.svg" alt="Zero Auth">
 </p>
@@ -26,11 +26,11 @@
   <a href="#data-coverage-15-categories">Coverage</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#quick-start">Quick Start</a> ·
-  <a href="#91-endpoints">Endpoints</a> ·
+  <a href="#92-endpoints">Endpoints</a> ·
   <a href="./CHANGELOG.md">Changelog</a>
 </p>
 
-Full-stack data toolkit for China A-Share market — 15-layer architecture · 91 capability endpoints (86 primary + 5 backups) · 34 data sources · direct HTTP calls except two TCP client libraries (mootdx / baostock)
+Full-stack data toolkit for China A-Share market — 15-layer architecture · 92 capability endpoints (87 primary + 5 backups) · 34 data sources · direct HTTP calls except two TCP client libraries (mootdx / baostock)
 
 A self-contained Skill file that consolidates raw A-share and related market data from 34 sources into a ready-to-use toolkit for AI coding assistants. No need to memorize Tencent K-line paging parameters, the binary layout of TDX end-of-day packages, Eastmoney PDF Referer headers, or iwencai X-Claw authentication — it's all handled. And when a primary source bans you, there's a backup-source quick reference to fall back on.
 Full-stack data toolkit for China A-Share market — 12-layer architecture · 60 capability endpoints (55 primary + 5 backups) · 22 data sources · TDX-first with automatic fallback
@@ -156,11 +156,11 @@ Launch Claude Code and say "Check the valuation of 688017" — the skill activat
 
 ---
 
-## 91 Endpoints
+## 92 Endpoints
 
-There are 86 primary entries and 5 backups. Counts refer to capability entries: CSI/CNI or SSE/SZSE routes within one function count once; helpers and research candidates are excluded.
+There are 87 primary entries and 5 backups. Counts refer to capability entries: CSI/CNI or SSE/SZSE routes within one function count once; helpers and research candidates are excluded.
 
-> **Counting convention:** the tables below have 92 rows but count as 91 capability endpoints — "Eastmoney Industry Reports" shares **the same endpoint** as "Eastmoney reportapi" (only the `qType` parameter differs) and "THS Northbound (historical)" is a local self-built cache (not a separate endpoint), so neither is counted; the single "EM Intraday Anomaly Pool" row covers **two** endpoints (`list` / `count`), adding one back. 92 − 1 − 1 + 1 = 91. The ticker helper `to_joinquant()` is not counted.
+> **Counting convention:** the tables below have 93 rows but count as 92 capability endpoints — "Eastmoney Industry Reports" shares **the same endpoint** as "Eastmoney reportapi" (only the `qType` parameter differs) and "THS Northbound (historical)" is a local self-built cache (not a separate endpoint), so neither is counted; the single "EM Intraday Anomaly Pool" row covers **two** endpoints (`list` / `count`), adding one back. 93 − 1 − 1 + 1 = 92. The ticker helper `to_joinquant()` is not counted.
 
 ### Market Data (real-time, no IP ban)
 
@@ -238,6 +238,7 @@ There are 86 primary entries and 5 backups. Counts refer to capability entries: 
 | **Listing / Delisting Date** | ipoDate / outDate / status (only zero-auth source for delisting dates, V3.7 new) |
 | **SW Industry History** | Every industry reclassification per stock (removes look-ahead bias; codes only, no Chinese names, V3.7 new) |
 | **ST List** | Today's SSE/SZSE/BSE ST and *ST stocks with price; falls back to baostock (SSE/SZSE only, no price) when Eastmoney is unreachable (V3.9 new) |
+| **Eastmoney Watchlist Evaluation** | Raw per-stock comprehensive evaluation; 5-second spacing and 10-minute cache; anonymous access has not been verified live |
 
 ### Limit-Up / Limit-Down (V3.3 new)
 
@@ -336,7 +337,7 @@ There are 86 primary entries and 5 backups. Counts refer to capability entries: 
 
 ### Authentication
 
-All integrated sources except iwencai require no user registration or API key. CSI, CNI and BSE (V3.8) and the 12 sources added in V3.9 (TDX official site, Wallstreetcn, CCTV, SSE e-Interaction, ChinaBond, China Money, the five futures exchanges, SGE) need no user credentials; BSE establishes an anonymous site cookie. Only iwencai semantic search requires an API key ([apply here](https://www.iwencai.com/skillhub)). Optional research candidates are excluded from these capabilities.
+Most integrated sources require no user registration or API key. Only iwencai semantic search is known to require an API key ([apply here](https://www.iwencai.com/skillhub)). The new Eastmoney watchlist evaluation request does not send account cookies, but anonymous access has not been verified live. CSI, CNI and BSE (V3.8) and the 12 sources added in V3.9 (TDX official site, Wallstreetcn, CCTV, SSE e-Interaction, ChinaBond, China Money, the five futures exchanges, SGE) need no user credentials; BSE establishes an anonymous site cookie. Optional research candidates are excluded from these capabilities.
 
 ---
 

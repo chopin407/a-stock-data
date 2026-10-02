@@ -3,7 +3,7 @@
 <h1 align="center">a-stock-data</h1>
 
 <p align="center">
-  <b>A 股全栈数据工具包 — 15 层架构 · 91 个端点 · 34 个数据源 · 零鉴权（iwencai 除外）</b>
+  <b>A 股全栈数据工具包 — 15 层架构 · 92 个端点 · 34 个数据源 · 多数接口零鉴权</b>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
   <a href="https://github.com/simonlin1212/a-stock-data/stargazers"><img src="https://img.shields.io/github/stars/simonlin1212/a-stock-data?style=social" alt="Stars"></a>
   <br>
   <img src="https://img.shields.io/badge/layers-15-2ea44f.svg" alt="Layers">
-  <img src="https://img.shields.io/badge/endpoints-91-2ea44f.svg" alt="Endpoints">
+  <img src="https://img.shields.io/badge/endpoints-92-2ea44f.svg" alt="Endpoints">
   <img src="https://img.shields.io/badge/sources-34-2ea44f.svg" alt="Sources">
   <img src="https://img.shields.io/badge/auth-zero-success.svg" alt="Zero Auth">
 </p>
@@ -26,7 +26,7 @@
   <a href="#数据覆盖15-类">数据覆盖</a> ·
   <a href="#架构">架构</a> ·
   <a href="#快速开始">快速开始</a> ·
-  <a href="#91-个端点能力清单">端点清单</a> ·
+  <a href="#92-个端点能力清单">端点清单</a> ·
   <a href="#使用示例">使用示例</a> ·
   <a href="#faq">FAQ</a> ·
   <a href="./CHANGELOG.md">更新日志</a>
@@ -154,11 +154,11 @@ export ASTOCK_TDX_URL=http://192.168.1.74:8080
 
 ---
 
-## 91 个端点能力清单
+## 92 个端点能力清单
 
-共 86 个主入口、5 个备胎。沿用能力入口计数：同一函数的中证/国证或沪深路由不重复计数，辅助函数与仅列入候选的项目不计入。
+共 87 个主入口、5 个备胎。沿用能力入口计数：同一函数的中证/国证或沪深路由不重复计数，辅助函数与仅列入候选的项目不计入。
 
-> **计数口径：** 下方清单共 92 行，按能力入口计 91 个——「东财 行业研报」与「东财 reportapi」为**同一端点**（仅 `qType` 参数不同）、「同花顺北向（历史）」为本地自缓存（非独立端点），两行不计入；「东财日内异动池」一行含 `list` / `count` **两个端点**，多计 1 个。92 − 1 − 1 + 1 = 91。代码转换辅助函数 `to_joinquant()` 不计入。
+> **计数口径：** 下方清单共 93 行，按能力入口计 92 个——「东财 行业研报」与「东财 reportapi」为**同一端点**（仅 `qType` 参数不同）、「同花顺北向（历史）」为本地自缓存（非独立端点），两行不计入；「东财日内异动池」一行含 `list` / `count` **两个端点**，多计 1 个。93 − 1 − 1 + 1 = 92。代码转换辅助函数 `to_joinquant()` 不计入。
 
 ### 行情层（实时，不封 IP）
 
@@ -236,6 +236,7 @@ export ASTOCK_TDX_URL=http://192.168.1.74:8080
 | **上市/退市日** | ipoDate / outDate / 状态（唯一零鉴权退市日源，V3.7 新增） |
 | **申万行业变迁史** | 每只股票历次行业调整（消除前视偏差；仅代码无中文名，V3.7 新增） |
 | **ST 名单** | 沪深京 ST / *ST 当日名单 + 现价；东财不可达时退 baostock（只有沪深、无价格，V3.9 新增） |
+| **东财自选股综合评价** | 单票综合评价原始结果；按证券代码查询，5 秒间隔与 10 分钟缓存，匿名访问待实测 |
 
 ### 打板层（V3.3 新增）
 
@@ -334,7 +335,7 @@ export ASTOCK_TDX_URL=http://192.168.1.74:8080
 
 ### 鉴权要求
 
-除 iwencai 外，其余已接入数据源无需用户注册或 API Key；V3.8 的中证、国证和北交所，以及 V3.9 新增的 12 个来源（通达信官网、华尔街见闻、央视网、上证e互动、中债、中国货币网、五家期货交易所、上金所）也不需要用户凭据（北交所使用官网匿名 Cookie）。仅 iwencai 语义搜索需要 API Key（[申请地址](https://www.iwencai.com/skillhub)）。候选增强源不计入上述能力。
+多数已接入数据源无需用户注册或 API Key；仅 iwencai 语义搜索明确需要 API Key（[申请地址](https://www.iwencai.com/skillhub)）。新接入的东财自选股综合评价按无账户 Cookie 编写，匿名可用性尚待联网实测。V3.8 的中证、国证和北交所，以及 V3.9 新增的 12 个来源（通达信官网、华尔街见闻、央视网、上证e互动、中债、中国货币网、五家期货交易所、上金所）不需要用户凭据（北交所使用官网匿名 Cookie）。候选增强源不计入上述能力。
 
 ---
 

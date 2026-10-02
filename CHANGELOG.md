@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased — 2026-09-30
+## Unreleased — 2026-10-01
+
+- 新增 §6.9 `eastmoney_zixuan_evaluation(code)`：按 `SECUCODE` 获取东财自选股综合评价单条原始记录，兼容 JSON / JSONP；根据用户提供的 600699.SH 响应样本整理评分、资金、关注度和财务指标字段。复用 `em_get()`，另设 5 秒请求间隔与 10 分钟进程内缓存。未复制账户 Cookie；匿名访问仍待联网实测。能力入口 91→92（87 主入口 + 5 备胎）。
+- 共用 `em_get()` 的状态码重试不再包含 429：收到东财限流响应立即交给调用方处理，避免自动补发请求。
 
 - 整理东财龙虎榜详情页 `RPT_DAILYBILLBOARD_DETAILSNEW` 请求、字段与日期口径；新增 `dragon_tiger_detail_range(start_date, end_date)` 自定义区间完整分页查询，并让现有 `daily_dragon_tiger()` 使用完整结果。该能力沿用现有报表，不增加端点计数；抓包中的账户 Cookie 未写入代码。
 - 新增 `stock_fund_flow_rank(period, direction, top_n)`：东财全市场个股今日/3日主力资金流入、流出排行，含超大/大/中/小单净额与净占比；新增 `industry_fund_flow_rank(...)`：东财资金流页面行业口径今日/5日排行。复用 `em_get()` 限流、无账户 Cookie；能力入口 89→91（86 主入口 + 5 备胎）。离线参数及字段映射测试通过，实时响应仍待可连通网络验证。
